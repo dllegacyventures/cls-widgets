@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CLS · Lead-Check — ist dieser Betrieb ein guter Lead?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  :root { --bg:#080706; --panel:#0e0d0b; --ink:#f2efe8; --muted:rgba(242,239,232,.6); --faint:rgba(242,239,232,.32); --line:rgba(242,239,232,.14); --am:#ff9f1c; }
+  body { background:var(--bg); color:var(--ink); font-family:'Archivo',sans-serif; line-height:1.6; padding:36px 18px 60px; }
+  .wrap { max-width:760px; margin:0 auto; }
+  .kicker { font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.3em; color:var(--am); text-transform:uppercase; margin-bottom:14px; }
+  h1 { font-family:'Anton',sans-serif; font-weight:400; text-transform:uppercase; font-size:clamp(30px,6vw,50px); line-height:1.02; margin-bottom:14px; }
+  h1 .am { color:var(--am); }
+  .lead { color:var(--muted); font-size:17px; margin-bottom:28px; }
+  .lead b { color:var(--ink); }
+
+  .q { background:var(--panel); border:1px solid var(--line); margin-bottom:10px; padding:16px 18px 16px 56px; position:relative; cursor:pointer; }
+  .q input { position:absolute; left:18px; top:21px; width:20px; height:20px; accent-color:var(--am); cursor:pointer; }
+  .q .t { font-weight:600; font-size:15.5px; }
+  .q .s { color:var(--muted); font-size:13.5px; }
+  .q .pts { position:absolute; right:16px; top:16px; font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--faint); }
+
+  .result { border:1px solid var(--line); background:var(--panel); padding:24px; margin-top:22px; }
+  .score-line { display:flex; align-items:baseline; gap:14px; margin-bottom:12px; }
+  .score { font-family:'Anton',sans-serif; font-size:56px; color:var(--am); line-height:1; }
+  .score small { font-size:22px; color:var(--faint); }
+  .bar { height:8px; background:rgba(242,239,232,.1); margin:10px 0 18px; }
+  .bar i { display:block; height:100%; width:0%; background:var(--am); transition:width .4s; }
+  .verdict { font-weight:700; font-size:19px; margin-bottom:6px; }
+  .verdict.hot { color:var(--am); }
+  .advice { color:var(--muted); font-size:15px; }
+  .advice b { color:var(--ink); }
+  .opener { margin-top:16px; display:none; }
+  .opener.show { display:block; }
+  .opener h3 { font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.24em; text-transform:uppercase; color:var(--am); margin-bottom:8px; }
+  .opener .box { display:flex; background:#050505; border:1px solid var(--line); }
+  .opener .box p { flex:1; font-size:14.5px; color:var(--ink); padding:14px 16px; }
+  .opener .box button { border:0; border-left:1px solid var(--line); background:none; color:var(--am); font-family:'JetBrains Mono',monospace; font-size:12px; padding:0 16px; cursor:pointer; }
+  .footer { margin-top:40px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.24em; color:var(--faint); text-transform:uppercase; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">CLS · Leads · Lektion 4</div>
+  <h1>Der Lead-<span class="am">Check.</span></h1>
+  <p class="lead">Öffne die Webseite eines Betriebs und geh diese 7 Punkte durch. <b>Hak alles ab, was zutrifft</b> — der Score sagt dir, ob sich der Anruf lohnt und womit du das Gespräch eröffnest.</p>
+
+  <div id="qs">
+    <div class="q" onclick="toggle(event,this)"><input type="checkbox" data-p="3" onchange="calc()"><span class="pts">+3</span><div class="t">Keine Webseite — nur Google-Eintrag oder Facebook</div><div class="s">Der beste Lead überhaupt: kompletter Neubau, klarer Pitch.</div></div>
+    <div class="q" onclick="toggle(event,this)"><input type="checkbox" data-p="2" onchange="calc()"><span class="pts">+2</span><div class="t">Design sichtbar veraltet (10+ Jahre alt)</div><div class="s">Winzige Schrift, alte Fotos, Baukasten-Look aus 2012.</div></div>
+    <div class="q" onclick="toggle(event,this)"><input type="checkbox" data-p="2" onchange="calc()"><span class="pts">+2</span><div class="t">Auf dem Handy kaputt oder unlesbar</div><div class="s">Seite am Smartphone öffnen: muss man zoomen? Punkt.</div></div>
+    <div class="q" onclick="toggle(event,this)"><input type="checkbox" data-p="2" onchange="calc()"><span class="pts">+2</span><div class="t">Keine klare Kontakt-Möglichkeit</div><div class="s">Telefonnummer versteckt, kein Formular, keine Öffnungszeiten.</div></div>
+    <div class="q" onclick="toggle(event,this)"><input type="checkbox" data-p="1" onchange="calc()"><span class="pts">+1</span><div class="t">Gute Google-Bewertungen (4★+)</div><div class="s">Der Laden läuft — er verliert nur online Kunden. Zahlungskräftig.</div></div>
+    <div class="q" onclick="toggle(event,this)"><input type="checkbox" data-p="1" onchange="calc()"><span class="pts">+1</span><div class="t">Lokales Einzugsgebiet, lokale Konkurrenz ist online besser</div><div class="s">Der Konkurrent 2 Straßen weiter hat eine moderne Seite? Perfektes Argument.</div></div>
+    <div class="q" onclick="toggle(event,this)"><input type="checkbox" data-p="1" onchange="calc()"><span class="pts">+1</span><div class="t">Inhaber persönlich erreichbar</div><div class="s">Kleiner Betrieb, Chef geht selbst ans Telefon — kurze Entscheidungswege.</div></div>
+  </div>
+
+  <div class="result">
+    <div class="score-line"><span class="score" id="score">0<small> / 12</small></span></div>
+    <div class="bar"><i id="fill"></i></div>
+    <div class="verdict" id="verdict">Noch nichts angehakt.</div>
+    <div class="advice" id="advice">Geh die Liste von oben nach unten durch, während du die Webseite des Betriebs offen hast.</div>
+    <div class="opener" id="opener">
+      <h3>Dein Gesprächs-Opener</h3>
+      <div class="box"><p id="openerText"></p><button onclick="cpOpener(this)">COPY</button></div>
+    </div>
+  </div>
+
+  <div class="footer">CLS — Claude Lösungs System</div>
+</div>
+<script>
+  function toggle(ev, card){
+    if (ev.target.tagName === 'INPUT') return;
+    var box = card.querySelector('input');
+    box.checked = !box.checked;
+    calc();
+  }
+  function calc(){
+    var total = 0, noSite = false;
+    document.querySelectorAll('#qs input').forEach(function(b,i){
+      if(b.checked){ total += parseInt(b.dataset.p,10); if(i===0) noSite = true; }
+    });
+    document.getElementById('score').innerHTML = total + '<small> / 12</small>';
+    document.getElementById('fill').style.width = (total/12*100) + '%';
+    var v = document.getElementById('verdict'), a = document.getElementById('advice'),
+        op = document.getElementById('opener'), ot = document.getElementById('openerText');
+    v.classList.remove('hot');
+    if (total === 0){ v.textContent = 'Noch nichts angehakt.'; a.innerHTML = 'Geh die Liste von oben nach unten durch, während du die Webseite des Betriebs offen hast.'; op.classList.remove('show'); return; }
+    op.classList.add('show');
+    if (total >= 7){
+      v.textContent = '🔥 Heißer Lead — heute noch anrufen.'; v.classList.add('hot');
+      a.innerHTML = 'Hier leckt sichtbar Geld. Screenshot der alten Seite machen, <b>vorher Demo bauen lassen</b> (30–60 Min mit Jarvis) und mit fertigem Ergebnis anrufen.';
+      ot.textContent = noSite
+        ? 'Guten Tag Herr/Frau [Name] — ich hab Ihren Betrieb auf Google gefunden und gesehen, dass Sie noch keine eigene Webseite haben. Ich hab mir erlaubt, Ihnen einen ersten Entwurf zu bauen. Darf ich Ihnen den Link schicken?'
+        : 'Guten Tag Herr/Frau [Name] — ich bin auf Ihrer Webseite gewesen und mir sind 2 Dinge aufgefallen, die Sie aktuell Kunden kosten. Ich hab als Beispiel schon mal eine neue Version gebaut. 10 Minuten am Telefon — darf ich Ihnen zeigen, was ich meine?';
+    } else if (total >= 4){
+      v.textContent = 'Solider Lead — auf die Liste.';
+      a.innerHTML = 'Lohnt sich, aber nicht als Erstes. In die Anrufliste mit <b>Priorität 2</b> — erst die heißen Leads abtelefonieren.';
+      ot.textContent = 'Guten Tag Herr/Frau [Name] — ich helfe Betrieben in [Stadt], über ihre Webseite mehr Anfragen zu bekommen. Bei Ihnen ist mir [konkreter Punkt] aufgefallen. Wäre ein kurzes Telefonat kommende Woche okay?';
+    } else {
+      v.textContent = 'Schwacher Lead — Zeit sparen.';
+      a.innerHTML = 'Zu wenig Schmerz = zäher Verkauf. <b>Nächster Betrieb.</b> Deine Zeit ist der Engpass, nicht die Anzahl der Läden da draußen.';
+      ot.textContent = 'Diesen Betrieb überspringen — such dir einen mit mehr Punkten. Faustregel: Unter 4 Punkten kein Anruf.';
+    }
+  }
+  function cpOpener(btn){
+    navigator.clipboard.writeText(document.getElementById('openerText').textContent).then(function(){
+      btn.textContent='✓'; setTimeout(function(){btn.textContent='COPY'},1500);
+    });
+  }
+</script>
+</body>
+</html>

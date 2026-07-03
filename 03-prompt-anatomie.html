@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CLS · Prompt-Anatomie &amp; Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  :root { --bg:#080706; --panel:#0e0d0b; --ink:#f2efe8; --muted:rgba(242,239,232,.6); --faint:rgba(242,239,232,.32); --line:rgba(242,239,232,.14); --am:#ff9f1c; }
+  body { background:var(--bg); color:var(--ink); font-family:'Archivo',sans-serif; line-height:1.6; padding:36px 18px 60px; }
+  .wrap { max-width:860px; margin:0 auto; }
+  .kicker { font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.3em; color:var(--am); text-transform:uppercase; margin-bottom:14px; }
+  h1 { font-family:'Anton',sans-serif; font-weight:400; text-transform:uppercase; font-size:clamp(30px,6vw,52px); line-height:1.02; margin-bottom:14px; }
+  h1 .am { color:var(--am); }
+  h2 { font-family:'Anton',sans-serif; font-weight:400; text-transform:uppercase; font-size:24px; margin:38px 0 16px; }
+  h2 .am { color:var(--am); }
+  .lead { color:var(--muted); font-size:17px; max-width:660px; margin-bottom:28px; }
+  .lead b { color:var(--ink); }
+
+  .anatomy { background:#050505; border:1px solid var(--line); padding:20px; font-family:'JetBrains Mono',monospace; font-size:13.5px; line-height:2; overflow-x:auto; }
+  .anatomy .part { display:block; padding:4px 10px; border-left:3px solid transparent; cursor:pointer; white-space:pre-wrap; }
+  .anatomy .part:hover, .anatomy .part.on { border-left-color:var(--am); background:rgba(255,159,28,.06); }
+  .explain { border:1px solid var(--am); background:rgba(255,159,28,.05); padding:16px 18px; margin-top:12px; font-size:15px; color:var(--muted); min-height:76px; }
+  .explain b { color:var(--am); display:block; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.2em; text-transform:uppercase; margin-bottom:6px; }
+  .explain span { color:var(--ink); }
+
+  .dd { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:8px; }
+  @media (max-width:640px){ .dd { grid-template-columns:1fr; } }
+  .dd .col { border:1px solid var(--line); background:var(--panel); padding:16px 18px; }
+  .dd .col h3 { font-family:'JetBrains Mono',monospace; font-size:13px; letter-spacing:.2em; margin-bottom:12px; }
+  .dd .no h3 { color:var(--faint); }
+  .dd .yes h3 { color:var(--am); }
+  .dd li { list-style:none; font-size:14.5px; color:var(--muted); padding:6px 0 6px 24px; position:relative; }
+  .dd .no li::before { content:'✕'; position:absolute; left:0; color:var(--faint); }
+  .dd .yes li::before { content:'→'; position:absolute; left:0; color:var(--am); }
+  .dd li b { color:var(--ink); }
+
+  .builder { border:1px solid var(--line); background:var(--panel); padding:22px; }
+  .builder .grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media (max-width:640px){ .builder .grid { grid-template-columns:1fr; } }
+  .f label { display:block; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+  .f input, .f select { width:100%; background:#050505; border:1px solid var(--line); color:var(--ink); font-family:'Archivo',sans-serif; font-size:15px; padding:11px 12px; outline:none; }
+  .f input:focus { border-color:var(--am); }
+  .out { margin-top:18px; }
+  .out textarea { width:100%; min-height:270px; background:#050505; border:1px solid var(--am); color:var(--ink); font-family:'JetBrains Mono',monospace; font-size:13px; line-height:1.7; padding:16px; resize:vertical; }
+  .rowbtn { display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; }
+  .rowbtn button { font-family:'JetBrains Mono',monospace; font-size:13px; letter-spacing:.1em; padding:12px 22px; cursor:pointer; border:1px solid var(--am); background:rgba(255,159,28,.1); color:var(--am); }
+  .rowbtn button:hover { background:rgba(255,159,28,.2); }
+  .footer { margin-top:40px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.24em; color:var(--faint); text-transform:uppercase; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">CLS · Prompts · Lektion 3</div>
+  <h1>So briefst du Claude <span class="am">wie ein Profi.</span></h1>
+  <p class="lead">Ein guter Prompt ist kein Zauberspruch — er ist ein <b>Briefing wie an einen Mitarbeiter</b>. Tipp unten auf die Zeilen des CLS-Webseiten-Briefings und sieh, warum jede einzelne da steht. Danach baust du dir deinen eigenen mit dem Builder.</p>
+
+  <h2>Die Anatomie — <span class="am">tipp auf jede Zeile</span></h2>
+  <div class="anatomy" id="anatomy">
+    <span class="part" data-x="Rolle & Auftrag|Der erste Satz gibt Claude eine Rolle und EIN klares Ziel. Kein „kannst du vielleicht…" — ein Arbeitsauftrag.">Baue eine komplette Webseite für [Betrieb] aus [Stadt].</span>
+    <span class="part" data-x="Kontext|Branche bestimmt Bildsprache, Tonalität und Aufbau. Ein Dachdecker braucht Vertrauen + Anfrage-Formular, kein Portfolio-Kunstwerk.">Branche:  [Dachdecker]</span>
+    <span class="part" data-x="Das Ziel|Das wichtigste Feld: WAS soll die Seite erreichen? Anrufe? Reservierungen? Newsletter? Ohne Ziel optimiert Claude ins Blaue.">Ziel:     Anrufe + Anfragen über das Kontaktformular</span>
+    <span class="part" data-x="Struktur|Du legst die Seiten fest — sonst erfindet die KI welche. Impressum nicht vergessen: Pflicht in DE.">Seiten:   Start · Leistungen · Über uns · Kontakt · Impressum</span>
+    <span class="part" data-x="Stil + Referenz|Stil in 3 Worten + ein Referenz-Link. Eine Referenz ersetzt 500 Wörter Design-Beschreibung.">Stil:     modern, hell, vertrauenswürdig — Referenz: [Link]</span>
+    <span class="part" data-x="Echte Inhalte|Der Unterschied zwischen Demo und verkaufbarer Seite: echte Texte, Öffnungszeiten, Leistungen vom Kunden. Notizen aus dem Erstgespräch reichen.">Inhalte:  nutze die Texte aus meiner Notiz unten</span>
+    <span class="part" data-x="Technische Leitplanken|Eine HTML-Datei = einfach hochzuladen, nichts kann brechen. „Mobil zuerst" weil 70 % der Besucher vom Handy kommen.">Eine einzige HTML-Datei. Mobil zuerst. Fertig zum Hochladen.</span>
+  </div>
+  <div class="explain" id="explain"><b>← Zeile antippen</b>Jede Zeile dieses Briefings hat einen Job. Tipp sie an und du siehst, welchen.</div>
+
+  <h2>Die 4 Regeln — <span class="am">Do &amp; Don't</span></h2>
+  <div class="dd">
+    <div class="col no">
+      <h3>SO NICHT</h3>
+      <li>„Mach mir eine schöne Webseite"</li>
+      <li>Zehn Sachen in einem Satz fordern</li>
+      <li>Design in Prosa beschreiben</li>
+      <li>Ergebnis unbesehen an den Kunden schicken</li>
+    </div>
+    <div class="col yes">
+      <h3>SO GEHT'S</h3>
+      <li><b>Ein Ziel pro Prompt</b> — erst bauen, dann verfeinern</li>
+      <li><b>Struktur vorgeben</b> — Listen statt Fließtext</li>
+      <li><b>Referenz-Link</b> statt Design-Roman</li>
+      <li><b>Nachfassen:</b> „Ändere nur X, lass den Rest" — Iteration ist der Skill</li>
+    </div>
+  </div>
+
+  <h2>Dein Prompt-<span class="am">Builder</span></h2>
+  <div class="builder">
+    <div class="grid">
+      <div class="f"><label>Betrieb</label><input id="b_name" placeholder="Bäckerei Sommer" oninput="build()"></div>
+      <div class="f"><label>Stadt</label><input id="b_stadt" placeholder="Köln" oninput="build()"></div>
+      <div class="f"><label>Branche</label><input id="b_branche" placeholder="Bäckerei" oninput="build()"></div>
+      <div class="f"><label>Ziel der Seite</label>
+        <select id="b_ziel" onchange="build()">
+          <option>Anrufe + Anfragen über das Kontaktformular</option>
+          <option>Tischreservierungen / Bestellungen</option>
+          <option>Termine über ein Buchungsformular</option>
+          <option>Vertrauen aufbauen + Ladenbesuche</option>
+        </select></div>
+      <div class="f"><label>Stil (3 Worte)</label><input id="b_stil" placeholder="warm, hell, familiär" oninput="build()"></div>
+      <div class="f"><label>Referenz-Link (optional)</label><input id="b_ref" placeholder="https://…" oninput="build()"></div>
+    </div>
+    <div class="out"><textarea id="result" readonly></textarea></div>
+    <div class="rowbtn">
+      <button onclick="copyPrompt(this)">PROMPT KOPIEREN</button>
+    </div>
+  </div>
+
+  <div class="footer">CLS — Claude Lösungs System</div>
+</div>
+<script>
+  document.querySelectorAll('.part').forEach(function(p){
+    p.addEventListener('click', function(){
+      document.querySelectorAll('.part').forEach(function(q){q.classList.remove('on')});
+      p.classList.add('on');
+      var x = p.dataset.x.split('|');
+      document.getElementById('explain').innerHTML = '<b>'+x[0]+'</b><span>'+x[1]+'</span>';
+    });
+  });
+  function v(id, fb){ var val = document.getElementById(id).value.trim(); return val || fb; }
+  function build(){
+    var name = v('b_name','[Betrieb]'), stadt = v('b_stadt','[Stadt]'),
+        branche = v('b_branche','[Branche]'), ziel = document.getElementById('b_ziel').value,
+        stil = v('b_stil','modern, hell, vertrauenswürdig'), ref = document.getElementById('b_ref').value.trim();
+    var t = 'Baue eine komplette Webseite für ' + name + ' aus ' + stadt + '.\n\n'
+      + 'Branche:  ' + branche + '\n'
+      + 'Ziel:     ' + ziel + '\n'
+      + 'Seiten:   Start · Leistungen · Über uns · Kontakt · Impressum\n'
+      + 'Stil:     ' + stil + (ref ? ' — Referenz: ' + ref : '') + '\n'
+      + 'Inhalte:  nutze die Texte aus meiner Notiz unten\n\n'
+      + 'Eine einzige HTML-Datei. Mobil zuerst.\nFertig zum Hochladen.\n\n'
+      + '--- MEINE NOTIZEN ---\n[Hier Öffnungszeiten, Leistungen, Texte vom Kunden einfügen]';
+    document.getElementById('result').value = t;
+  }
+  function copyPrompt(btn){
+    navigator.clipboard.writeText(document.getElementById('result').value).then(function(){
+      btn.textContent='KOPIERT ✓'; setTimeout(function(){btn.textContent='PROMPT KOPIEREN'},1500);
+    });
+  }
+  build();
+</script>
+</body>
+</html>

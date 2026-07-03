@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CLS · Lektions-Widgets — Übersicht</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  :root { --bg:#080706; --panel:#0e0d0b; --ink:#f2efe8; --muted:rgba(242,239,232,.6); --faint:rgba(242,239,232,.32); --line:rgba(242,239,232,.14); --am:#ff9f1c; }
+  body { background:var(--bg); color:var(--ink); font-family:'Archivo',sans-serif; line-height:1.6; padding:36px 18px 60px; }
+  .wrap { max-width:860px; margin:0 auto; }
+  .kicker { font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.3em; color:var(--am); text-transform:uppercase; margin-bottom:14px; }
+  h1 { font-family:'Anton',sans-serif; font-weight:400; text-transform:uppercase; font-size:clamp(30px,6vw,52px); line-height:1.02; margin-bottom:14px; }
+  h1 .am { color:var(--am); }
+  .lead { color:var(--muted); font-size:17px; margin-bottom:30px; max-width:640px; }
+  a.item { display:grid; grid-template-columns:64px 1fr auto; gap:16px; align-items:center; border:1px solid var(--line); background:var(--panel); padding:18px 20px; margin-bottom:10px; text-decoration:none; color:var(--ink); }
+  a.item:hover { border-color:var(--am); }
+  a.item .n { font-family:'JetBrains Mono',monospace; font-size:15px; color:var(--am); }
+  a.item .t { font-weight:700; font-size:17px; }
+  a.item .d { color:var(--muted); font-size:14px; }
+  a.item .type { font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.2em; text-transform:uppercase; color:var(--faint); border:1px solid var(--line); padding:5px 10px; white-space:nowrap; }
+  @media (max-width:640px){ a.item { grid-template-columns:44px 1fr; } a.item .type { display:none; } }
+  .footer { margin-top:40px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.24em; color:var(--faint); text-transform:uppercase; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">CLS · Klassenraum</div>
+  <h1>Die Lektions-<span class="am">Widgets.</span></h1>
+  <p class="lead">Interaktive Begleiter zu den Video-Lektionen — Checklisten, Rechner, Trainer. Jedes Widget ist eigenständig und wird pro Skool-Lektion eingebettet.</p>
+
+  <a class="item" href="01-claude-im-terminal.html"><span class="n">01</span><span><span class="t">Claude ins Terminal</span><br><span class="d">Setup-Checkliste mit Copy-Befehlen · macOS &amp; Windows · Fortschritt wird gespeichert</span></span><span class="type">Checkliste</span></a>
+  <a class="item" href="02-git-github-brew.html"><span class="n">02</span><span><span class="t">Brew, Git &amp; GitHub</span><br><span class="d">Begriffs-Karten zum Aufklappen, 4-Schritte-Setup, Alltags-Loop, Fehlerhilfe</span></span><span class="type">Explainer</span></a>
+  <a class="item" href="03-prompt-anatomie.html"><span class="n">03</span><span><span class="t">Prompt-Anatomie &amp; Builder</span><br><span class="d">Das Webseiten-Briefing Zeile für Zeile erklärt + interaktiver Prompt-Generator</span></span><span class="type">Interaktiv</span></a>
+  <a class="item" href="04-lead-check.html"><span class="n">04</span><span><span class="t">Der Lead-Check</span><br><span class="d">7-Punkte-Score: Lohnt sich dieser Betrieb? Mit passendem Gesprächs-Opener</span></span><span class="type">Score-Tool</span></a>
+  <a class="item" href="05-preis-rechner.html"><span class="n">05</span><span><span class="t">Preis- &amp; Einkommens-Rechner</span><br><span class="d">Slider für Seiten, Preise &amp; Retainer → Monats-/Jahresumsatz live</span></span><span class="type">Rechner</span></a>
+  <a class="item" href="06-outreach-cadence.html"><span class="n">06</span><span><span class="t">Der Outreach-Fahrplan</span><br><span class="d">Tag 1 → 3 → 7 → 14 als Timeline, alle E-Mail- &amp; Telefon-Vorlagen zum Kopieren</span></span><span class="type">Vorlagen</span></a>
+  <a class="item" href="07-einwand-trainer.html"><span class="n">07</span><span><span class="t">Der Einwand-Trainer</span><br><span class="d">8 Flip-Cards: Einwand → Antwort → warum es funktioniert</span></span><span class="type">Trainer</span></a>
+
+  <div class="footer">CLS — Claude Lösungs System</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CLS · Outreach-Fahrplan — vom ersten Kontakt zum Termin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  :root { --bg:#080706; --panel:#0e0d0b; --ink:#f2efe8; --muted:rgba(242,239,232,.6); --faint:rgba(242,239,232,.32); --line:rgba(242,239,232,.14); --am:#ff9f1c; }
+  body { background:var(--bg); color:var(--ink); font-family:'Archivo',sans-serif; line-height:1.6; padding:36px 18px 60px; }
+  .wrap { max-width:820px; margin:0 auto; }
+  .kicker { font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.3em; color:var(--am); text-transform:uppercase; margin-bottom:14px; }
+  h1 { font-family:'Anton',sans-serif; font-weight:400; text-transform:uppercase; font-size:clamp(30px,6vw,50px); line-height:1.02; margin-bottom:14px; }
+  h1 .am { color:var(--am); }
+  .lead { color:var(--muted); font-size:17px; margin-bottom:32px; max-width:640px; }
+  .lead b { color:var(--ink); }
+
+  .tl { border-left:2px solid var(--line); }
+  .day { position:relative; padding:0 0 30px 34px; }
+  .day::before { content:''; position:absolute; left:-8px; top:8px; width:14px; height:14px; border-radius:50%; background:var(--bg); border:2px solid var(--faint); }
+  .day.hot::before { border-color:var(--am); background:var(--am); }
+  .day .when { font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.24em; text-transform:uppercase; color:var(--am); margin-bottom:6px; }
+  .day .t { font-weight:700; font-size:18px; margin-bottom:6px; }
+  .day .d { color:var(--muted); font-size:15px; margin-bottom:12px; max-width:640px; }
+  .day .d b { color:var(--ink); }
+
+  .tpl { border:1px solid var(--line); background:var(--panel); }
+  .tpl .bar { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--line); padding:10px 16px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); }
+  .tpl .bar button { border:1px solid var(--am); background:rgba(255,159,28,.08); color:var(--am); font-family:'JetBrains Mono',monospace; font-size:11px; padding:6px 14px; cursor:pointer; }
+  .tpl pre { font-family:'Archivo',sans-serif; font-size:14.5px; color:var(--ink); padding:16px; white-space:pre-wrap; line-height:1.65; }
+  .tpl pre .v { color:var(--am); }
+
+  .rules { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:34px; }
+  @media (max-width:640px){ .rules { grid-template-columns:1fr; } }
+  .rules .col { border:1px solid var(--line); background:var(--panel); padding:16px 18px; }
+  .rules h3 { font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.2em; margin-bottom:10px; }
+  .rules .no h3 { color:var(--faint); }
+  .rules .yes h3 { color:var(--am); }
+  .rules li { list-style:none; font-size:14.5px; color:var(--muted); padding:5px 0 5px 24px; position:relative; }
+  .rules .no li::before { content:'✕'; position:absolute; left:0; color:var(--faint); }
+  .rules .yes li::before { content:'→'; position:absolute; left:0; color:var(--am); }
+  .rules li b { color:var(--ink); }
+  h2 { font-family:'Anton',sans-serif; font-weight:400; text-transform:uppercase; font-size:24px; margin:36px 0 14px; }
+  h2 .am { color:var(--am); }
+  .footer { margin-top:40px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.24em; color:var(--faint); text-transform:uppercase; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">CLS · Outreach · Lektion 6</div>
+  <h1>Der Outreach-<span class="am">Fahrplan.</span></h1>
+  <p class="lead">Ein Kontakt ist keine Kampagne. <b>Die meisten Deals entstehen beim 2. bis 4. Kontakt</b> — die meisten Anfänger hören nach dem 1. auf. Hier ist die exakte Abfolge mit Vorlagen zum Kopieren. Platzhalter in <span style="color:var(--am)">[Klammern]</span> ersetzen.</p>
+
+  <div class="tl">
+    <div class="day hot">
+      <div class="when">Tag 1 · E-Mail</div>
+      <div class="t">Der Öffner — konkret statt Werbung</div>
+      <div class="d">Eine Beobachtung, ein Nutzen, eine Mini-Frage. <b>Kein Anhang, kein Link-Bombardement.</b></div>
+      <div class="tpl"><div class="bar"><span>E-Mail 01</span><button onclick="cp(this)">COPY</button></div><pre>Betreff: Ihre Webseite — 2 Dinge
+
+Guten Tag <span class="v">[Herr/Frau Name]</span>,
+
+ich bin über Google auf <span class="v">[Betrieb]</span> gestoßen. Ihre Bewertungen sind stark — Ihre Webseite verkauft das leider nicht: <span class="v">[konkreter Punkt, z. B. „am Handy ist die Telefonnummer nicht klickbar"]</span>.
+
+Ich baue moderne Seiten für Betriebe in <span class="v">[Stadt]</span> — schneller und günstiger als eine Agentur. Ich habe als Beispiel eine erste Version für Sie vorbereitet.
+
+Darf ich Ihnen den Link schicken?
+
+<span class="v">[Dein Name]</span></pre></div>
+    </div>
+
+    <div class="day">
+      <div class="when">Tag 3 · Follow-up</div>
+      <div class="t">Kurz nachfassen — mit dem Demo-Link</div>
+      <div class="d">Jetzt lieferst du den Beweis direkt mit. <b>3 Sätze, mehr nicht.</b></div>
+      <div class="tpl"><div class="bar"><span>E-Mail 02</span><button onclick="cp(this)">COPY</button></div><pre>Betreff: Re: Ihre Webseite — 2 Dinge
+
+Guten Tag <span class="v">[Herr/Frau Name]</span>,
+
+kurzes Nachfassen — hier ist der Entwurf, den ich für <span class="v">[Betrieb]</span> gebaut habe: <span class="v">[Link]</span>
+
+Schauen Sie ihn auf dem Handy an, da ist der Unterschied am größten. Wenn er Ihnen gefällt: 10 Minuten am Telefon reichen für alles Weitere.
+
+<span class="v">[Dein Name]</span></pre></div>
+    </div>
+
+    <div class="day hot">
+      <div class="when">Tag 5–7 · Anruf</div>
+      <div class="t">Der Anruf — der Schritt, der Geld verdient</div>
+      <div class="d">E-Mails wärmen auf, <b>der Abschluss passiert am Telefon.</b> Beste Zeiten: vormittags 9–11 Uhr (Handwerk früher, Gastro nach 15 Uhr).</div>
+      <div class="tpl"><div class="bar"><span>Telefon-Leitfaden</span><button onclick="cp(this)">COPY</button></div><pre>„Guten Tag <span class="v">[Name]</span>, hier ist <span class="v">[Dein Name]</span> — ich hatte Ihnen diese Woche zur Webseite geschrieben. Haben Sie den Entwurf kurz gesehen?"
+
+Falls NEIN: „Kein Problem — darf ich Ihnen in einem Satz sagen, worum es geht? Ihre Seite kostet Sie aktuell Anfragen, ich habe eine neue Version gebaut, die das behebt. Ich schicke Ihnen den Link, während wir sprechen."
+
+Falls JA: „Was hat Ihnen am meisten gefallen?" → zuhören → „Wollen wir das so umsetzen? Sie bekommen die Seite komplett fertig für <span class="v">[Preis]</span>."</pre></div>
+    </div>
+
+    <div class="day">
+      <div class="when">Tag 14 · Letzte Mail</div>
+      <div class="t">Das respektvolle Ende — mit offener Tür</div>
+      <div class="d">Kein Drama, kein Druck. Diese Mail bekommt <b>überraschend viele Antworten.</b></div>
+      <div class="tpl"><div class="bar"><span>E-Mail 03</span><button onclick="cp(this)">COPY</button></div><pre>Betreff: Kurzer Abschluss
+
+Guten Tag <span class="v">[Herr/Frau Name]</span>,
+
+ich will Sie nicht weiter nerven — das hier ist meine letzte Mail. Der Entwurf bleibt noch 2 Wochen online: <span class="v">[Link]</span>
+
+Falls das Thema später relevant wird, melden Sie sich einfach. Ich wünsche Ihnen weiter volle Auftragsbücher.
+
+<span class="v">[Dein Name]</span></pre></div>
+    </div>
+  </div>
+
+  <h2>Die <span class="am">Regeln</span></h2>
+  <div class="rules">
+    <div class="col no">
+      <h3>NIEMALS</h3>
+      <li>Massenmail mit „Sehr geehrte Damen und Herren"</li>
+      <li>5 Links + Anhänge in der ersten Mail</li>
+      <li>Über „SEO-Optimierung" und Buzzwords reden</li>
+      <li>Nach 1 Kontakt aufgeben</li>
+    </div>
+    <div class="col yes">
+      <h3>IMMER</h3>
+      <li><b>1 konkreter Fehler,</b> den der Inhaber selbst prüfen kann</li>
+      <li><b>Demo vor Preis</b> — erst sehen lassen, dann verkaufen</li>
+      <li>Zahlen tracken: 10 Kontakte → wie viele Antworten?</li>
+      <li><b>Anrufen.</b> Die Mail öffnet die Tür, das Telefon schließt ab</li>
+    </div>
+  </div>
+
+  <div class="footer">CLS — Claude Lösungs System</div>
+</div>
+<script>
+  function cp(btn){
+    var pre = btn.closest('.tpl').querySelector('pre').innerText;
+    navigator.clipboard.writeText(pre).then(function(){
+      btn.textContent='KOPIERT ✓'; setTimeout(function(){btn.textContent='COPY'},1500);
+    });
+  }
+</script>
+</body>
+</html>

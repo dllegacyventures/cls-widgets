@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CLS · Claude ins Terminal bringen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --bg:#080706; --panel:#0e0d0b; --ink:#f2efe8; --muted:rgba(242,239,232,.6); --faint:rgba(242,239,232,.32); --line:rgba(242,239,232,.14); --am:#ff9f1c; }
+  body { background:var(--bg); color:var(--ink); font-family:'Archivo',sans-serif; line-height:1.6; padding:36px 18px 60px; }
+  .wrap { max-width:860px; margin:0 auto; }
+  .kicker { font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.3em; color:var(--am); text-transform:uppercase; margin-bottom:14px; }
+  h1 { font-family:'Anton',sans-serif; font-weight:400; text-transform:uppercase; font-size:clamp(30px,6vw,52px); line-height:1.02; margin-bottom:14px; }
+  h1 .am { color:var(--am); }
+  .lead { color:var(--muted); font-size:17px; max-width:640px; margin-bottom:30px; }
+  .lead b { color:var(--ink); }
+
+  .os-switch { display:flex; gap:8px; margin-bottom:26px; }
+  .os-switch button { font-family:'JetBrains Mono',monospace; font-size:13px; letter-spacing:.12em; padding:10px 22px; background:none; border:1px solid var(--line); color:var(--muted); cursor:pointer; }
+  .os-switch button.on { border-color:var(--am); color:var(--am); background:rgba(255,159,28,.07); }
+
+  .progress-line { display:flex; align-items:center; gap:14px; margin-bottom:26px; font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--muted); }
+  .bar { flex:1; height:6px; background:rgba(242,239,232,.1); }
+  .bar i { display:block; height:100%; width:0%; background:var(--am); transition:width .3s; }
+
+  .step { background:var(--panel); border:1px solid var(--line); margin-bottom:14px; padding:20px 20px 20px 58px; position:relative; }
+  .step.done { border-color:rgba(255,159,28,.5); }
+  .step input[type=checkbox] { position:absolute; left:20px; top:24px; width:20px; height:20px; accent-color:var(--am); cursor:pointer; }
+  .step .t { font-weight:700; font-size:17px; margin-bottom:6px; }
+  .step .t .n { color:var(--am); font-family:'JetBrains Mono',monospace; font-size:13px; margin-right:10px; }
+  .step .d { color:var(--muted); font-size:15px; margin-bottom:10px; }
+  .step .d b { color:var(--ink); }
+  .step.done .t { color:var(--muted); }
+
+  .cmd { display:flex; align-items:stretch; background:#050505; border:1px solid var(--line); margin-top:8px; }
+  .cmd code { flex:1; font-family:'JetBrains Mono',monospace; font-size:13.5px; color:var(--ink); padding:12px 14px; overflow-x:auto; white-space:pre; }
+  .cmd code .c { color:var(--faint); }
+  .cmd button { border:0; border-left:1px solid var(--line); background:none; color:var(--am); font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.08em; padding:0 16px; cursor:pointer; white-space:nowrap; }
+  .cmd button:hover { background:rgba(255,159,28,.1); }
+
+  .note { border-left:3px solid var(--am); padding:10px 14px; background:rgba(255,159,28,.05); color:var(--muted); font-size:14px; margin-top:10px; }
+  .note b { color:var(--ink); }
+
+  details { border:1px solid var(--line); margin-bottom:10px; background:var(--panel); }
+  summary { cursor:pointer; padding:14px 18px; font-weight:600; font-size:15px; list-style:none; }
+  summary::before { content:'+'; color:var(--am); margin-right:12px; font-family:'JetBrains Mono',monospace; }
+  details[open] summary::before { content:'–'; }
+  details .body { padding:0 18px 16px 40px; color:var(--muted); font-size:14.5px; }
+  h2 { font-family:'Anton',sans-serif; font-weight:400; text-transform:uppercase; font-size:24px; margin:36px 0 16px; }
+  h2 .am { color:var(--am); }
+  .footer { margin-top:40px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.24em; color:var(--faint); text-transform:uppercase; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">CLS · Setup · Lektion 1</div>
+  <h1>Claude ins <span class="am">Terminal.</span></h1>
+  <p class="lead">Das Terminal ist der Ort, wo Jarvis lebt. In <b>5 Schritten</b> läuft Claude Code auf deinem Rechner — jeden Befehl kannst du direkt kopieren. Hak ab, was erledigt ist: dein Fortschritt wird gespeichert.</p>
+
+  <div class="os-switch">
+    <button id="btnMac" class="on" onclick="setOS('mac')">macOS</button>
+    <button id="btnWin" onclick="setOS('win')">Windows</button>
+  </div>
+
+  <div class="progress-line"><span id="pct">0 / 5</span><div class="bar"><i id="fill"></i></div></div>
+
+  <!-- ── macOS ── -->
+  <div id="mac">
+    <div class="step"><input type="checkbox" data-k="m1" onchange="tick(this)">
+      <div class="t"><span class="n">01</span>Terminal öffnen</div>
+      <div class="d">Drück <b>⌘ + Leertaste</b>, tipp <b>Terminal</b>, drück Enter. Das schwarze Fenster ist ab jetzt dein Cockpit.</div>
+    </div>
+    <div class="step"><input type="checkbox" data-k="m2" onchange="tick(this)">
+      <div class="t"><span class="n">02</span>Homebrew installieren</div>
+      <div class="d">Homebrew ist der App-Store fürs Terminal — damit installierst du alles Weitere mit einem Befehl.</div>
+      <div class="cmd"><code>/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</code><button onclick="cp(this)">COPY</button></div>
+      <div class="note"><b>Wichtig:</b> Das Terminal fragt nach deinem Mac-Passwort. Beim Tippen siehst du nichts — das ist normal. Tippen, Enter, fertig.</div>
+    </div>
+    <div class="step"><input type="checkbox" data-k="m3" onchange="tick(this)">
+      <div class="t"><span class="n">03</span>Node.js installieren</div>
+      <div class="d">Node ist die Laufzeitumgebung, die Claude Code braucht.</div>
+      <div class="cmd"><code>brew install node</code><button onclick="cp(this)">COPY</button></div>
+    </div>
+    <div class="step"><input type="checkbox" data-k="m4" onchange="tick(this)">
+      <div class="t"><span class="n">04</span>Claude Code installieren</div>
+      <div class="cmd"><code>npm install -g @anthropic-ai/claude-code</code><button onclick="cp(this)">COPY</button></div>
+    </div>
+    <div class="step"><input type="checkbox" data-k="m5" onchange="tick(this)">
+      <div class="t"><span class="n">05</span>Starten &amp; einloggen</div>
+      <div class="d">Einmal <b>claude</b> tippen — beim ersten Start öffnet sich der Login im Browser. Danach bist du drin.</div>
+      <div class="cmd"><code>claude</code><button onclick="cp(this)">COPY</button></div>
+      <div class="note"><b>Test bestanden, wenn:</b> du im Terminal ein Eingabefeld von Claude siehst. Schreib als Erstes: <b>„Bau mir eine Test-Webseite als eine HTML-Datei."</b></div>
+    </div>
+  </div>
+
+  <!-- ── Windows ── -->
+  <div id="win" style="display:none">
+    <div class="step"><input type="checkbox" data-k="w1" onchange="tick(this)">
+      <div class="t"><span class="n">01</span>PowerShell öffnen</div>
+      <div class="d">Windows-Taste drücken, <b>PowerShell</b> tippen, <b>als Administrator ausführen</b> (Rechtsklick).</div>
+    </div>
+    <div class="step"><input type="checkbox" data-k="w2" onchange="tick(this)">
+      <div class="t"><span class="n">02</span>Node.js installieren</div>
+      <div class="cmd"><code>winget install OpenJS.NodeJS.LTS</code><button onclick="cp(this)">COPY</button></div>
+      <div class="note"><b>Danach:</b> PowerShell einmal schließen und neu öffnen, damit der Befehl <b>npm</b> gefunden wird.</div>
+    </div>
+    <div class="step"><input type="checkbox" data-k="w3" onchange="tick(this)">
+      <div class="t"><span class="n">03</span>Claude Code installieren</div>
+      <div class="cmd"><code>npm install -g @anthropic-ai/claude-code</code><button onclick="cp(this)">COPY</button></div>
+    </div>
+    <div class="step"><input type="checkbox" data-k="w4" onchange="tick(this)">
+      <div class="t"><span class="n">04</span>Starten &amp; einloggen</div>
+      <div class="cmd"><code>claude</code><button onclick="cp(this)">COPY</button></div>
+      <div class="d">Beim ersten Start öffnet sich der Login im Browser. Einloggen — fertig.</div>
+    </div>
+    <div class="step"><input type="checkbox" data-k="w5" onchange="tick(this)">
+      <div class="t"><span class="n">05</span>Erster Test</div>
+      <div class="d">Schreib in Claude: <b>„Bau mir eine Test-Webseite als eine HTML-Datei."</b> Öffne die Datei per Doppelklick. Wenn du eine Webseite siehst: Setup steht.</div>
+    </div>
+  </div>
+
+  <h2>Wenn etwas <span class="am">klemmt</span></h2>
+  <details><summary>„command not found: brew"</summary><div class="body">Terminal komplett schließen und neu öffnen. Wenn es bleibt: Homebrew hat dir am Ende der Installation 2 Befehle angezeigt („Next steps") — die musst du einmal ausführen. Scroll im Terminal hoch und kopiere sie.</div></details>
+  <details><summary>„command not found: claude" oder „npm nicht gefunden"</summary><div class="body">Terminal/PowerShell neu starten. Prüf danach mit <b>node --version</b>, ob Node installiert ist. Wenn nein: Schritt Node wiederholen.</div></details>
+  <details><summary>Login-Fenster öffnet sich nicht</summary><div class="body">Im Terminal wird ein Link angezeigt — kopiere ihn manuell in deinen Browser und logge dich dort ein.</div></details>
+  <details><summary>Ich habe keinen Claude-Account</summary><div class="body">Auf claude.ai registrieren (der Pro-Plan reicht für den Start). Mit diesem Account loggst du dich im Terminal ein.</div></details>
+
+  <div class="footer">CLS — Claude Lösungs System</div>
+</div>
+<script>
+  function setOS(os){
+    document.getElementById('mac').style.display = os==='mac'?'':'none';
+    document.getElementById('win').style.display = os==='win'?'':'none';
+    document.getElementById('btnMac').classList.toggle('on', os==='mac');
+    document.getElementById('btnWin').classList.toggle('on', os==='win');
+    try{localStorage.setItem('cls-setup-os',os)}catch(e){}
+    updateBar();
+  }
+  function cp(btn){
+    var code = btn.parentElement.querySelector('code').innerText;
+    navigator.clipboard.writeText(code).then(function(){
+      btn.textContent='KOPIERT ✓'; setTimeout(function(){btn.textContent='COPY'},1500);
+    });
+  }
+  function tick(box){
+    box.closest('.step').classList.toggle('done', box.checked);
+    try{localStorage.setItem('cls-setup-'+box.dataset.k, box.checked?'1':'')}catch(e){}
+    updateBar();
+  }
+  function updateBar(){
+    var vis = document.getElementById('mac').style.display==='none' ? '#win' : '#mac';
+    var boxes = document.querySelectorAll(vis+' input[type=checkbox]');
+    var done = 0; boxes.forEach(function(b){ if(b.checked) done++; });
+    document.getElementById('pct').textContent = done+' / '+boxes.length;
+    document.getElementById('fill').style.width = (done/boxes.length*100)+'%';
+  }
+  (function(){
+    try{
+      document.querySelectorAll('input[type=checkbox]').forEach(function(b){
+        if(localStorage.getItem('cls-setup-'+b.dataset.k)==='1'){ b.checked=true; b.closest('.step').classList.add('done'); }
+      });
+      var os = localStorage.getItem('cls-setup-os'); if(os) setOS(os);
+    }catch(e){}
+    updateBar();
+  })();
+</script>
+</body>
+</html>

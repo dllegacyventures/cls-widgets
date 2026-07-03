@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CLS · Einwand-Trainer — was du am Telefon antwortest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  :root { --bg:#080706; --panel:#0e0d0b; --ink:#f2efe8; --muted:rgba(242,239,232,.6); --faint:rgba(242,239,232,.32); --line:rgba(242,239,232,.14); --am:#ff9f1c; }
+  body { background:var(--bg); color:var(--ink); font-family:'Archivo',sans-serif; line-height:1.6; padding:36px 18px 60px; }
+  .wrap { max-width:860px; margin:0 auto; }
+  .kicker { font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.3em; color:var(--am); text-transform:uppercase; margin-bottom:14px; }
+  h1 { font-family:'Anton',sans-serif; font-weight:400; text-transform:uppercase; font-size:clamp(30px,6vw,50px); line-height:1.02; margin-bottom:14px; }
+  h1 .am { color:var(--am); }
+  .lead { color:var(--muted); font-size:17px; margin-bottom:28px; max-width:660px; }
+  .lead b { color:var(--ink); }
+
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  @media (max-width:680px){ .grid { grid-template-columns:1fr; } }
+  .card { border:1px solid var(--line); background:var(--panel); cursor:pointer; padding:20px; min-height:150px; position:relative; }
+  .card .tag { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--faint); margin-bottom:10px; }
+  .card .q { font-size:19px; font-weight:700; font-style:italic; }
+  .card .hint { position:absolute; bottom:14px; left:20px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--faint); }
+  .card .a { display:none; }
+  .card.flip { border-color:var(--am); background:rgba(255,159,28,.05); }
+  .card.flip .q, .card.flip .hint { display:none; }
+  .card.flip .a { display:block; }
+  .card.flip .tag { color:var(--am); }
+  .card .a .say { font-size:15.5px; color:var(--ink); margin-bottom:10px; }
+  .card .a .why { font-size:13.5px; color:var(--muted); border-top:1px solid var(--line); padding-top:10px; }
+  .card .a .why b { color:var(--am); }
+
+  .principle { margin-top:28px; border-left:3px solid var(--am); background:rgba(255,159,28,.05); padding:16px 20px; color:var(--muted); font-size:15.5px; }
+  .principle b { color:var(--ink); }
+  .footer { margin-top:40px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.24em; color:var(--faint); text-transform:uppercase; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">CLS · Verkauf · Lektion 7</div>
+  <h1>Der Einwand-<span class="am">Trainer.</span></h1>
+  <p class="lead">Das sind die <b>8 Sätze, die du am Telefon hören wirst</b> — garantiert. Tipp auf eine Karte und sieh, was du antwortest und warum es funktioniert. Übe sie laut, bis sie sitzen wie ein Reflex.</p>
+
+  <div class="grid">
+    <div class="card" onclick="this.classList.toggle('flip')">
+      <div class="tag">Einwand 01</div>
+      <div class="q">„Wir brauchen keine Webseite, wir haben genug Kunden."</div>
+      <div class="hint">→ tippen für die Antwort</div>
+      <div class="a"><div class="say">„Das glaube ich sofort — deshalb rufe ich ja an. Betriebe, die voll sind, können sich die <b>besten</b> Aufträge aussuchen. Genau dabei hilft die Seite: Sie zieht die Kunden an, die Sie wollen — nicht die, die über Umwege kommen."</div><div class="why"><b>Warum es wirkt:</b> Du widersprichst nicht, du drehst den Einwand in einen Status-Gewinn. Volle Auftragsbücher = Auswahl, nicht Stillstand.</div></div>
+    </div>
+    <div class="card" onclick="this.classList.toggle('flip')">
+      <div class="tag">Einwand 02</div>
+      <div class="q">„Was kostet das?"</div>
+      <div class="hint">→ tippen für die Antwort</div>
+      <div class="a"><div class="say">„Deutlich weniger als bei einer Agentur — die nehmen 5.000 aufwärts. Bevor ich Ihnen eine Zahl sage: Schauen Sie sich den Entwurf 2 Minuten an. Dann wissen Sie, worüber wir reden. Fair?"</div><div class="why"><b>Warum es wirkt:</b> Preis vor Wert genannt = immer zu teuer. Erst ankern (Agentur 5.000+), dann Demo, dann dein Preis — der sich danach klein anfühlt.</div></div>
+    </div>
+    <div class="card" onclick="this.classList.toggle('flip')">
+      <div class="tag">Einwand 03</div>
+      <div class="q">„Mein Neffe / ein Bekannter macht das schon."</div>
+      <div class="hint">→ tippen für die Antwort</div>
+      <div class="a"><div class="say">„Super — und wann war das letzte Update? … Genau das ist der Punkt: Ich bin kein Gefallen, ich bin ein Dienstleister. Die Seite ist in 3 Tagen live, und wenn was ist, gehe ich ans Telefon."</div><div class="why"><b>Warum es wirkt:</b> Der Neffe ist Aufschub, kein Konkurrent. Du verkaufst Verbindlichkeit — das, was der Gefallen nie liefert.</div></div>
+    </div>
+    <div class="card" onclick="this.classList.toggle('flip')">
+      <div class="tag">Einwand 04</div>
+      <div class="q">„Schicken Sie mir mal was per Mail."</div>
+      <div class="hint">→ tippen für die Antwort</div>
+      <div class="a"><div class="say">„Mach ich gern — eine Sache dazu: Die Mail landet erfahrungsgemäß im Stapel. Haben Sie jetzt 3 Minuten? Ich schicke den Link, Sie öffnen ihn kurz am Handy, und Sie sagen mir direkt, ob es sich lohnt."</div><div class="why"><b>Warum es wirkt:</b> „Schicken Sie was" heißt meist „legen Sie auf". Du nimmst die Bitte an, aber holst die Entscheidung ins Jetzt.</div></div>
+    </div>
+    <div class="card" onclick="this.classList.toggle('flip')">
+      <div class="tag">Einwand 05</div>
+      <div class="q">„Ich muss mit meiner Frau / meinem Partner sprechen."</div>
+      <div class="hint">→ tippen für die Antwort</div>
+      <div class="a"><div class="say">„Verstehe ich komplett. Was glauben Sie, was er/sie sagen wird? … Damit das Gespräch leichter wird: Ich lasse den Entwurf online — zeigen Sie ihn heute Abend einfach. Ich rufe Donnerstag kurz durch, passt das?"</div><div class="why"><b>Warum es wirkt:</b> Du bekämpfst den Einwand nicht — du gibst ein Werkzeug fürs Partnergespräch (die Demo) und setzt einen festen Termin. Ohne Termin ist es ein Nein in Zeitlupe.</div></div>
+    </div>
+    <div class="card" onclick="this.classList.toggle('flip')">
+      <div class="tag">Einwand 06</div>
+      <div class="q">„Von KI gebaut? Das ist doch nichts Richtiges."</div>
+      <div class="hint">→ tippen für die Antwort</div>
+      <div class="a"><div class="say">„Die Seite, die Sie gerade sehen, ist das Ergebnis — gefällt sie Ihnen? Das Werkzeug ist am Ende egal. Wichtig ist: Sie ist schneller fertig, kostet weniger, und ich hafte persönlich für die Qualität."</div><div class="why"><b>Warum es wirkt:</b> Nie das Werkzeug verteidigen — aufs Ergebnis zeigen. Der Kunde kauft die Seite, nicht die Methode.</div></div>
+    </div>
+    <div class="card" onclick="this.classList.toggle('flip')">
+      <div class="tag">Einwand 07</div>
+      <div class="q">„Keine Zeit gerade."</div>
+      <div class="hint">→ tippen für die Antwort</div>
+      <div class="a"><div class="say">„Alles klar, dann halte ich es kurz: Ich habe eine neue Version Ihrer Webseite gebaut, der Link ist in Ihrem Postfach. 2 Minuten am Handy heute Abend. Ich rufe morgen um dieselbe Zeit an — passt das?"</div><div class="why"><b>Warum es wirkt:</b> Du respektierst die Zeit UND setzt den nächsten Kontakt. Nie mit „wann passt es denn?" enden — konkreten Zeitpunkt vorschlagen.</div></div>
+    </div>
+    <div class="card" onclick="this.classList.toggle('flip')">
+      <div class="tag">Einwand 08</div>
+      <div class="q">„Zu teuer."</div>
+      <div class="hint">→ tippen für die Antwort</div>
+      <div class="a"><div class="say">„Verglichen womit? … Rechnen wir kurz: Wenn die neue Seite Ihnen einen einzigen zusätzlichen Auftrag im Monat bringt — was ist der wert? … Sehen Sie: Die Seite kostet einmal, der Auftrag kommt jeden Monat."</div><div class="why"><b>Warum es wirkt:</b> „Zu teuer" ist nie absolut — es fehlt der Vergleichsrahmen. Du rechnest in Aufträgen statt in Euro, und der Preis wird zur Investition.</div></div>
+    </div>
+  </div>
+
+  <div class="principle"><b>Das Prinzip hinter allen 8:</b> Nie widersprechen. Zustimmen → umdrehen → nächster konkreter Schritt (Demo, Termin, Frage). Ein Einwand ist keine Ablehnung — es ist die Bitte um einen besseren Grund.</div>
+
+  <div class="footer">CLS — Claude Lösungs System</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CLS · Brew, Git &amp; GitHub verstehen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  :root { --bg:#080706; --panel:#0e0d0b; --ink:#f2efe8; --muted:rgba(242,239,232,.6); --faint:rgba(242,239,232,.32); --line:rgba(242,239,232,.14); --am:#ff9f1c; }
+  body { background:var(--bg); color:var(--ink); font-family:'Archivo',sans-serif; line-height:1.6; padding:36px 18px 60px; }
+  .wrap { max-width:860px; margin:0 auto; }
+  .kicker { font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.3em; color:var(--am); text-transform:uppercase; margin-bottom:14px; }
+  h1 { font-family:'Anton',sans-serif; font-weight:400; text-transform:uppercase; font-size:clamp(30px,6vw,52px); line-height:1.02; margin-bottom:14px; }
+  h1 .am { color:var(--am); }
+  h2 { font-family:'Anton',sans-serif; font-weight:400; text-transform:uppercase; font-size:24px; margin:38px 0 16px; }
+  h2 .am { color:var(--am); }
+  .lead { color:var(--muted); font-size:17px; max-width:660px; margin-bottom:28px; }
+  .lead b { color:var(--ink); }
+
+  .glossar { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:10px; }
+  .g { background:var(--panel); border:1px solid var(--line); padding:16px 18px; cursor:pointer; }
+  .g .w { font-family:'JetBrains Mono',monospace; font-size:14px; color:var(--am); margin-bottom:6px; }
+  .g .e { color:var(--muted); font-size:14px; display:none; }
+  .g.open .e { display:block; }
+  .g .hint { color:var(--faint); font-size:12px; font-family:'JetBrains Mono',monospace; }
+  .g.open .hint { display:none; }
+
+  .cmd { display:flex; align-items:stretch; background:#050505; border:1px solid var(--line); margin-top:8px; }
+  .cmd code { flex:1; font-family:'JetBrains Mono',monospace; font-size:13.5px; color:var(--ink); padding:12px 14px; overflow-x:auto; white-space:pre; }
+  .cmd code .v { color:var(--am); }
+  .cmd button { border:0; border-left:1px solid var(--line); background:none; color:var(--am); font-family:'JetBrains Mono',monospace; font-size:12px; padding:0 16px; cursor:pointer; white-space:nowrap; }
+  .cmd button:hover { background:rgba(255,159,28,.1); }
+  .step { background:var(--panel); border:1px solid var(--line); margin-bottom:12px; padding:18px 20px; }
+  .step .t { font-weight:700; font-size:16px; margin-bottom:4px; }
+  .step .t .n { color:var(--am); font-family:'JetBrains Mono',monospace; font-size:13px; margin-right:10px; }
+  .step .d { color:var(--muted); font-size:14.5px; }
+  .step .d b { color:var(--ink); }
+
+  .flowline { display:flex; flex-wrap:wrap; gap:8px; align-items:center; font-family:'JetBrains Mono',monospace; font-size:13px; margin:14px 0 6px; }
+  .flowline span { border:1px solid var(--line); padding:8px 14px; color:var(--muted); background:var(--panel); }
+  .flowline b { color:var(--am); font-weight:400; }
+  .note { border-left:3px solid var(--am); padding:10px 14px; background:rgba(255,159,28,.05); color:var(--muted); font-size:14px; margin-top:12px; }
+  .note b { color:var(--ink); }
+  details { border:1px solid var(--line); margin-bottom:10px; background:var(--panel); }
+  summary { cursor:pointer; padding:14px 18px; font-weight:600; font-size:15px; list-style:none; }
+  summary::before { content:'+'; color:var(--am); margin-right:12px; font-family:'JetBrains Mono',monospace; }
+  details[open] summary::before { content:'–'; }
+  details .body { padding:0 18px 16px 40px; color:var(--muted); font-size:14.5px; }
+  details .body code { font-family:'JetBrains Mono',monospace; color:var(--am); font-size:13px; }
+  .footer { margin-top:40px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.24em; color:var(--faint); text-transform:uppercase; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">CLS · Setup · Lektion 2</div>
+  <h1>Brew, Git &amp; GitHub — <span class="am">dein Werkzeugkasten.</span></h1>
+  <p class="lead">Drei Werkzeuge, die jeder CLS-Builder einmal einrichtet und dann nie wieder anfasst: <b>Homebrew</b> installiert Programme, <b>Git</b> sichert deine Arbeit, <b>GitHub</b> bringt Kundenseiten ins Netz. Tipp auf die Begriffe — jede Karte erklärt sich selbst.</p>
+
+  <h2>Die Begriffe in <span class="am">30 Sekunden</span></h2>
+  <div class="glossar">
+    <div class="g" onclick="this.classList.toggle('open')"><div class="w">Homebrew (brew)</div><div class="hint">→ tippen zum Aufklappen</div><div class="e">Der App-Store fürs Terminal. Statt Installer-Dateien zu suchen, tippst du <b>brew install &lt;name&gt;</b> — fertig. Updates: <b>brew upgrade</b>.</div></div>
+    <div class="g" onclick="this.classList.toggle('open')"><div class="w">Git</div><div class="hint">→ tippen zum Aufklappen</div><div class="e">Ein Zeitreise-System für deine Projekte. Jeder „Commit" ist ein Speicherstand. Etwas kaputt gemacht? Zurückspulen. Läuft lokal auf deinem Rechner.</div></div>
+    <div class="g" onclick="this.classList.toggle('open')"><div class="w">GitHub</div><div class="hint">→ tippen zum Aufklappen</div><div class="e">Die Cloud für Git-Projekte. Deine Speicherstände liegen zusätzlich online — und mit <b>GitHub Pages</b> kannst du eine Kundenseite kostenlos live stellen.</div></div>
+    <div class="g" onclick="this.classList.toggle('open')"><div class="w">Repository („Repo")</div><div class="hint">→ tippen zum Aufklappen</div><div class="e">Ein Projektordner, den Git überwacht. Ein Kunde = ein Repo. So bleibt jede Webseite sauber getrennt.</div></div>
+    <div class="g" onclick="this.classList.toggle('open')"><div class="w">Commit</div><div class="hint">→ tippen zum Aufklappen</div><div class="e">Ein Speicherstand mit Notiz, z. B. „Kontaktformular eingebaut". Faustregel: nach jedem fertigen Arbeitsschritt einen Commit.</div></div>
+    <div class="g" onclick="this.classList.toggle('open')"><div class="w">Push</div><div class="hint">→ tippen zum Aufklappen</div><div class="e">Lädt deine lokalen Commits zu GitHub hoch. Erst nach dem Push ist deine Arbeit online gesichert.</div></div>
+  </div>
+
+  <h2>Setup in <span class="am">4 Schritten</span></h2>
+  <div class="step">
+    <div class="t"><span class="n">01</span>Git installieren</div>
+    <div class="cmd"><code>brew install git</code><button onclick="cp(this)">COPY</button></div>
+    <div class="d" style="margin-top:8px">Windows: <b>winget install Git.Git</b> in der PowerShell.</div>
+  </div>
+  <div class="step">
+    <div class="t"><span class="n">02</span>Git sagen, wer du bist</div>
+    <div class="d">Steht später in jedem Speicherstand. Einmalig einrichten:</div>
+    <div class="cmd"><code>git config --global user.name "<span class="v">Dein Name</span>"
+git config --global user.email "<span class="v">deine@mail.de</span>"</code><button onclick="cp(this)">COPY</button></div>
+  </div>
+  <div class="step">
+    <div class="t"><span class="n">03</span>GitHub-Konto + CLI</div>
+    <div class="d">Kostenloses Konto auf <b>github.com</b> anlegen, dann das offizielle Kommandozeilen-Tool verbinden:</div>
+    <div class="cmd"><code>brew install gh
+gh auth login</code><button onclick="cp(this)">COPY</button></div>
+    <div class="d" style="margin-top:8px">Bei den Fragen einfach Enter drücken (Standardwerte) und im Browser bestätigen.</div>
+  </div>
+  <div class="step">
+    <div class="t"><span class="n">04</span>Dein erstes Kunden-Repo</div>
+    <div class="d">Im Projektordner der Kundenseite (z. B. <b>baeckerei-sommer/</b>):</div>
+    <div class="cmd"><code>git init
+git add .
+git commit -m "Erste Version der Webseite"
+gh repo create <span class="v">baeckerei-sommer</span> --private --source=. --push</code><button onclick="cp(this)">COPY</button></div>
+  </div>
+
+  <h2>Der Alltag — <span class="am">immer derselbe Loop</span></h2>
+  <div class="flowline"><span>Änderung machen</span><b>→</b><span>git add .</span><b>→</b><span>git commit -m "was ich getan habe"</span><b>→</b><span>git push</span><b>↺</b></div>
+  <div class="note"><b>Merksatz:</b> Commit = Speicherstand auf deinem Rechner. Push = Backup in der Cloud. Wer pusht, verliert nie Arbeit — auch nicht, wenn der Laptop stirbt.</div>
+
+  <h2>Häufige <span class="am">Stolperer</span></h2>
+  <details><summary>„fatal: not a git repository"</summary><div class="body">Du bist im falschen Ordner. Mit <code>cd pfad/zum/projekt</code> in den Projektordner wechseln — dort, wo <code>git init</code> ausgeführt wurde.</div></details>
+  <details><summary>„permission denied" beim Push</summary><div class="body">Login abgelaufen oder nie verbunden: einmal <code>gh auth login</code> ausführen und im Browser bestätigen.</div></details>
+  <details><summary>Ich habe etwas kaputt gemacht und will zurück</summary><div class="body">Alle ungesicherten Änderungen verwerfen: <code>git checkout -- .</code> — du bist zurück beim letzten Commit. Genau dafür macht man Speicherstände.</div></details>
+  <details><summary>Muss der Kunde GitHub verstehen?</summary><div class="body">Nein. GitHub ist dein internes Werkzeug. Der Kunde bekommt eine fertige Webseite und einen Link — mehr sieht er nie.</div></details>
+
+  <div class="footer">CLS — Claude Lösungs System</div>
+</div>
+<script>
+  function cp(btn){
+    var code = btn.parentElement.querySelector('code').innerText;
+    navigator.clipboard.writeText(code).then(function(){
+      btn.textContent='KOPIERT ✓'; setTimeout(function(){btn.textContent='COPY'},1500);
+    });
+  }
+</script>
+</body>
+</html>
