@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CLS · Der Loop — ein Betrieb, acht Stationen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  :root { --bg:#080706; --panel:#0e0d0b; --ink:#f2efe8; --muted:rgba(242,239,232,.6); --faint:rgba(242,239,232,.32); --line:rgba(242,239,232,.14); --am:#ff9f1c; }
+  body { background:var(--bg); color:var(--ink); font-family:'Archivo',sans-serif; line-height:1.6; padding:36px 18px 60px; }
+  .wrap { max-width:980px; margin:0 auto; }
+  .kicker { font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.3em; color:var(--am); text-transform:uppercase; margin-bottom:14px; }
+  h1 { font-family:'Anton',sans-serif; font-weight:400; text-transform:uppercase; font-size:clamp(30px,6vw,50px); line-height:1.02; margin-bottom:14px; }
+  h1 .am, h2 .am { color:var(--am); }
+  h2 { font-family:'Anton',sans-serif; font-weight:400; text-transform:uppercase; font-size:24px; margin:40px 0 14px; }
+  .lead { color:var(--muted); font-size:17px; margin-bottom:28px; max-width:680px; }
+  .lead b { color:var(--ink); }
+
+  .stage { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:24px; align-items:start; }
+  @media (max-width:860px){ .stage { grid-template-columns:1fr; } }
+
+  .ring { position:relative; width:100%; max-width:480px; aspect-ratio:1/1; margin:0 auto; }
+  .ring svg { position:absolute; inset:0; width:100%; height:100%; overflow:visible; }
+  .node { position:absolute; transform:translate(-50%,-50%); display:flex; flex-direction:column; align-items:center; gap:4px; background:none; border:0; color:var(--ink); cursor:pointer; width:92px; font-family:'Archivo',sans-serif; }
+  .node .dot { width:46px; height:46px; border-radius:50%; background:var(--bg); border:1px solid var(--faint); display:grid; place-content:center; font-family:'JetBrains Mono',monospace; font-size:14px; color:var(--muted); transition:all .15s; }
+  .node .lb { font-size:12.5px; font-weight:600; line-height:1.2; text-align:center; color:var(--muted); }
+  .node:hover .dot { border-color:var(--am); color:var(--am); }
+  .node.on .dot { background:var(--am); border-color:var(--am); color:#080706; font-weight:700; }
+  .node.on .lb { color:var(--ink); }
+  .node:focus-visible { outline:2px solid var(--am); outline-offset:4px; }
+  .center { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:40%; text-align:center; }
+  .center .big { font-family:'Anton',sans-serif; font-size:clamp(22px,4vw,34px); line-height:1; text-transform:uppercase; }
+  .center .big .am { color:var(--am); }
+  .center .sm { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--faint); margin-top:6px; }
+  @media (max-width:420px){ .node { width:74px; } .node .dot { width:38px; height:38px; font-size:12px; } .node .lb { font-size:11px; } }
+  @media (prefers-reduced-motion:no-preference){ .flow { animation:dash 2.2s linear infinite; } @keyframes dash { to { stroke-dashoffset:-24; } } }
+
+  .detail { border:1px solid var(--line); background:var(--panel); }
+  .detail .hd { padding:16px 18px; border-bottom:1px solid var(--line); }
+  .detail .nr { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--am); }
+  .detail .t { font-family:'Anton',sans-serif; font-size:26px; text-transform:uppercase; line-height:1.1; margin-top:4px; }
+  .meta { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
+  .meta span { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.08em; border:1px solid var(--line); padding:3px 9px; color:var(--muted); }
+  .meta span.s { border-color:var(--am); color:var(--am); }
+  .detail .bd { padding:16px 18px; color:var(--muted); font-size:15.5px; }
+  .detail .bd b { color:var(--ink); }
+  .tpl { border-top:1px solid var(--line); }
+  .tpl .bar { display:flex; justify-content:space-between; align-items:center; gap:8px; padding:10px 18px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); border-bottom:1px solid var(--line); }
+  .tpl .bar button { border:1px solid var(--am); background:rgba(255,159,28,.08); color:var(--am); font-family:'JetBrains Mono',monospace; font-size:11px; padding:6px 14px; cursor:pointer; }
+  .tpl pre { font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--ink); padding:16px 18px; white-space:pre-wrap; line-height:1.65; max-height:320px; overflow:auto; }
+  .navbtn { display:flex; justify-content:space-between; gap:8px; padding:12px 18px; border-top:1px solid var(--line); }
+  .navbtn button { font-family:'JetBrains Mono',monospace; font-size:12px; padding:8px 14px; background:transparent; border:1px solid var(--line); color:var(--muted); cursor:pointer; }
+  .navbtn button:hover { border-color:var(--am); color:var(--am); }
+
+  .stopp { margin-top:26px; border:1px solid var(--am); background:rgba(255,159,28,.05); }
+  .stopp .tpl { border-top:0; }
+
+  .day { border:1px solid var(--line); background:var(--panel); padding:18px; }
+  .bar2 { display:flex; height:54px; border:1px solid var(--line); overflow:hidden; }
+  .seg { display:flex; flex-direction:column; justify-content:center; padding:0 8px; border-right:1px solid var(--bg); min-width:0; font-size:12px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .seg small { font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:400; opacity:.75; }
+  .seg:nth-child(odd){ background:rgba(255,159,28,.85); color:#080706; }
+  .seg:nth-child(even){ background:rgba(255,159,28,.35); color:var(--ink); }
+  .seg.rest { background:transparent !important; color:var(--muted); border-left:1px dashed var(--faint); }
+  .scale { display:flex; justify-content:space-between; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--faint); margin-top:6px; }
+  .legend { margin-top:14px; display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:8px; }
+  .legend div { font-size:13.5px; color:var(--muted); border-left:2px solid var(--am); padding-left:10px; }
+  .legend b { color:var(--ink); display:block; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.1em; }
+  .note { color:var(--muted); font-size:15px; margin-top:14px; }
+  .note b { color:var(--ink); }
+  @media (max-width:560px){ .seg { font-size:0; padding:0; } .seg small { display:none; } }
+  .footer { margin-top:40px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.24em; color:var(--faint); text-transform:uppercase; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">CLS · Der Loop · Bildlich erklärt</div>
+  <h1>Ein Betrieb, <span class="am">acht Stationen.</span></h1>
+  <p class="lead">Das ist der ganze Ablauf, den du jeden Tag einmal drehst. <b>Tipp auf eine Station</b> und du siehst, was dort passiert, welcher Schalter dahintersteht und welchen Prompt du kopierst. Am Ende steht wieder der nächste Betrieb: Deshalb heißt es Loop.</p>
+
+  <div class="stage">
+    <div class="ring" id="ring">
+      <svg viewBox="0 0 100 100" aria-hidden="true">
+        <circle cx="50" cy="50" r="38" fill="none" stroke="rgba(242,239,232,.14)" stroke-width=".4"/>
+        <circle class="flow" cx="50" cy="50" r="38" fill="none" stroke="#ff9f1c" stroke-width=".5" stroke-dasharray="3 9" opacity=".7"/>
+      </svg>
+      <div class="center"><div class="big">Du baust,<br><span class="am">bevor du fragst</span></div><div class="sm">ein Loop pro Tag</div></div>
+    </div>
+
+    <div class="detail" id="detail" aria-live="polite">
+      <div class="hd">
+        <div class="nr" id="d_nr"></div>
+        <div class="t" id="d_t"></div>
+        <div class="meta" id="d_meta"></div>
+      </div>
+      <div class="bd" id="d_bd"></div>
+      <div class="tpl"><div class="bar"><span id="d_pn"></span><button type="button" onclick="cp(this)">COPY</button></div><pre id="d_p"></pre></div>
+      <div class="navbtn"><button type="button" id="prev">← zurück</button><button type="button" id="next">weiter →</button></div>
+    </div>
+  </div>
+
+  <div class="stopp">
+    <div class="tpl"><div class="bar"><span>Prompt 0 · Die Stopp-Regeln · einmal in jeden neuen Claude-Chat</span><button type="button" onclick="cp(this)">COPY</button></div><pre>Regeln für alles, was du für mich in diesem Chat machst:
+1. Erfinde keine Fakten über den Betrieb — keine Öffnungszeiten, Preise, Bewertungen, Zahlen oder Auszeichnungen, die du nicht in einer Quelle gesehen hast. Was fehlt, markierst du als [OFFEN].
+2. Keine Superlative ohne Beleg („beste Pizzeria der Stadt" nur, wenn es jemand so gesagt hat — mit Quelle).
+3. Keine Heilversprechen, keine Garantien, keine Vergleiche mit Konkurrenten.
+4. Impressum und Datenschutz nur als Platzhalter mit [OFFEN] — die Angaben kommen vom Inhaber.
+5. Schreib auf Deutsch, in kurzen Sätzen, Du oder Sie so, wie der Betrieb seine Kunden anspricht.
+6. Wenn du dir bei etwas nicht sicher bist, frag mich — rate nicht.</pre></div>
+  </div>
+
+  <h2>Der Tag in <span class="am">60–90 Minuten</span></h2>
+  <div class="day">
+    <div class="bar2" role="img" aria-label="Tagesablauf: 0 bis 10 Minuten Betriebe auswählen, 10 bis 20 Steckbrief, 20 bis 40 Design und Texte, 40 bis 50 live stellen, 50 bis 55 Übergabe, danach Betrieb 2">
+      <div class="seg" style="flex:10">Auswählen<small>0–10</small></div>
+      <div class="seg" style="flex:10">Steckbrief<small>10–20</small></div>
+      <div class="seg" style="flex:20">Design + Texte<small>20–40</small></div>
+      <div class="seg" style="flex:10">Live<small>40–50</small></div>
+      <div class="seg" style="flex:5">Raus<small>50–55</small></div>
+      <div class="seg rest" style="flex:25">Betrieb 2 …<small>danach</small></div>
+    </div>
+    <div class="scale"><span>0 min</span><span>55 min</span><span>90 min</span></div>
+    <div class="legend">
+      <div><b>0–10 · 1a, 1b</b>5 Betriebe auswählen</div>
+      <div><b>10–20 · 1c</b>Steckbrief für Betrieb 1</div>
+      <div><b>20–40 · 2, 3, 4</b>Design in Stitch, Texte einsetzen</div>
+      <div><b>40–50 · 5</b>Live stellen</div>
+      <div><b>50–55 · 6</b>Übergabe schicken</div>
+      <div><b>danach</b>Betrieb 2, gleiche Reihenfolge</div>
+    </div>
+    <p class="note">Ein Betrieb pro Tag reicht am Anfang. <b>Fünf in der Woche.</b> Nachfassen und Preis kommen erst, wenn Tage vergangen sind oder der Betrieb antwortet.</p>
+  </div>
+
+  <div class="footer">CLS — Clone Looping System</div>
+</div>
+<script>
+var S=[
+ {t:'Betriebe finden',k:'Wen du überhaupt ansprichst',s:['Schalter 4 · Filter'],z:'0–10 min',pn:'Prompt 1a + 1b',
+  d:'Claude sucht dir 15 Betriebe in deiner Stadt und sortiert sie. Oben stehen die mit <b>guten Bewertungen (4,3+) und schwacher oder fehlender Webseite</b>. Daraus nimmst du deine ersten fünf.',
+  p:'Suche im Web nach Betrieben in [Stadt/Stadtteil, PLZ] aus der Branche [z. B. Physiotherapie, Dachdecker, Café, Friseur, Kfz-Werkstatt]. Gib mir 15 Stück als Tabelle: Name · Adresse · Telefon · Google-Bewertung (Sterne + Anzahl) · Hat eine eigene Webseite? (ja/nein/nur Facebook/Instagram) · Wenn ja: sieht sie modern aus, ist sie auf dem Handy nutzbar, hat sie eine Möglichkeit zum Anfragen/Buchen? Sortiere so, dass die Betriebe mit guten Bewertungen (4,3+) und schwacher oder fehlender Webseite oben stehen.\n\n---\n\nAus dieser Liste: Welche 5 haben das größte Missverhältnis zwischen gutem Ruf (Bewertungen) und schlechtem Auftritt im Netz? Begründe jede Wahl in einem Satz. Das sind meine ersten fünf.'},
+ {t:'Steckbrief',k:'Alles Öffentliche über den Betrieb',s:['Schalter 4 · Filter'],z:'10–20 min',pn:'Prompt 1c',
+  d:'Claude sammelt, was im Netz über den Betrieb steht: Angebot, Inhaber, Bewertungen mit wörtlichen Zitaten, Fotos, Öffnungszeiten. <b>Was fehlt, bleibt [OFFEN].</b> Am Ende drei Sätze: Was macht diesen Betrieb aus Sicht seiner Kunden besonders?',
+  p:'Stell mir alles zusammen, was du über [Betriebsname, Adresse] im Netz findest: Was bieten sie an, seit wann gibt es sie, wer ist der Inhaber, welche Leistungen werden in Bewertungen am häufigsten gelobt (mit 3 wörtlichen Zitaten und Datum), welche Fotos gibt es auf Google/Instagram, Öffnungszeiten, Telefon, E-Mail. Was fehlt, ist [OFFEN]. Gib mir am Ende drei Sätze: Was macht diesen Betrieb besonders — aus Sicht seiner Kunden, nicht aus seiner eigenen.'},
+ {t:'Design in Stitch',k:'Claude beschreibt, Stitch baut',s:['Schalter 5 · Stopp'],z:'20–40 min',pn:'Prompt 2',
+  d:'Du beschreibst Stitch nicht selbst. <b>Claude schreibt den Design-Prompt aus dem Steckbrief.</b> Du kopierst die Antwort 1:1 in Google Stitch und tippst auf „Generate“.',
+  p:'Schreib mir aus dem Steckbrief einen Design-Prompt für Google Stitch (englisch, max. 120 Wörter). Inhalt: eine mobile-first One-Page-Webseite für [Betriebsname], Branche [Branche]. Farbwelt passend zum Betrieb (leite sie aus Logo/Fotos ab, wenn du welche gesehen hast, sonst schlag eine vor und sag warum). Sektionen in dieser Reihenfolge: Hero mit Foto, Betriebsname, ein Satz Versprechen und ein Button „[Anrufen/Termin anfragen/Tisch reservieren]" · Leistungen als 3–6 Karten · „Das sagen Kunden" mit 3 echten Zitaten · Über uns mit Foto · Öffnungszeiten + Adresse + Karte · Kontakt mit Telefon-Button. Stil: [ruhig und hochwertig / warm und familiär / modern und klar]. Keine Stock-Klischees, große Schrift, viel Luft.'},
+ {t:'Texte',k:'Nur aus dem Steckbrief',s:['Schalter 5 · Stopp'],z:'20–40 min',pn:'Prompt 3',
+  d:'Claude schreibt alle Texte, <b>nur aus dem Steckbrief, Stopp-Regeln gelten.</b> Jede Zeile einzeln kopierbar, du setzt sie in Stitch ein. Klingt die Überschrift nach Werbung, lässt du sie so schreiben, wie der Inhaber es einem Nachbarn sagen würde.',
+  p:'Schreib die Texte für die Webseite von [Betriebsname] — nur aus dem Steckbrief, Stopp-Regeln gelten. Ich brauche: Überschrift Hero (max. 8 Wörter) · Unterzeile (1 Satz, was der Kunde bekommt) · Button-Text · 4 Leistungen mit je Titel + 1 Satz · 3 Kundenzitate wörtlich aus den Bewertungen mit Vorname und Monat · „Über uns" in 3 Sätzen in der Stimme des Inhabers · Öffnungszeiten · Kontaktzeile. Gib mir alles als Liste, jede Zeile einzeln kopierbar.'},
+ {t:'Live stellen',k:'Vom Handy, ohne Hosting',s:['Schalter 1 · Umkehr'],z:'40–50 min',pn:'Prompt 5 · Weg A',
+  d:'In Stitch den Code exportieren, Claude macht daraus ein einzelnes Artifact. <b>Veröffentlichen, und du hast einen Link.</b> Der geht an den Betrieb. Eine eigene Domain kommt erst, wenn der Betrieb gekauft hat.',
+  p:'Hier ist der HTML-Code aus Stitch. Mach daraus ein einzelnes, lauffähiges HTML-Artifact: alle Styles inline, keine externen Dateien außer Google Fonts, Bilder als die Original-Links aus Google/Instagram des Betriebs [Links einfügen] oder als neutrale Platzhalter mit Hinweis [FOTO]. Auf dem Handy muss alles lesbar sein. Ändere keine Texte.'},
+ {t:'Übergabe',k:'Das fertige Ding, keine Werbung',s:['Schalter 1 · Umkehr','Schalter 2 · Spiegel'],z:'50–55 min',pn:'Prompt 6',
+  d:'Du schickst den Link, <b>ohne Preis, ohne Verkauf, ohne Terminfrage.</b> Der Betrieb liest seinen eigenen Fehler („4,8 Sterne, aber keine Webseite“), nicht dein Angebot.',
+  p:'Schreib eine WhatsApp-Nachricht an [Inhaber-Name / „das Team von [Betrieb]"], max. 6 Sätze. Inhalt: Ich war auf eurem Google-Profil, [konkreter Punkt: „4,8 Sterne, aber keine Webseite" / „die Seite lädt auf dem Handy nicht"]. Ich hab euch deshalb eine gebaut — hier ist der Link: [Link]. Kein Verkauf, kein Preis, keine Frage nach einem Termin. Nur: „Schaut rein, wenn was falsch ist, sagt Bescheid, dann ändere ich es." Ton: wie ein Nachbar, nicht wie eine Agentur. Keine Emojis außer maximal einem.'},
+ {t:'Nachfassen',k:'Zwei Mal, dann Stopp',s:['Schalter 6 · Zeit'],z:'nach 3 und 7 Tagen',pn:'Prompt 8',
+  d:'Keine Antwort? Nach 3 Tagen eine Nachricht, <b>die etwas Neues bringt</b>, nicht „wollte nur nachhören“. Nach 7 Tagen eine, die höflich schließt. Dann Stopp. Der nächste Betrieb wartet schon.',
+  p:'Keine Antwort seit [3] Tagen. Schreib eine Nachfass-Nachricht mit 2 Sätzen, die etwas Neues bringt (z. B. „hab noch die Öffnungszeiten aus Google eingebaut, schau mal") — nicht „wollte nur nachhören". Danach: eine zweite Nachricht für Tag [7], die höflich schließt und die Tür offen lässt.'},
+ {t:'Preis',k:'Einmalig und monatlich',s:['Schalter 3 · Doppel','Schalter 7 · Preis'],z:'wenn er antwortet',pn:'Prompt 7',
+  d:'Zwei Preise, eine Wahl: <b>einmalig für Seite und Einrichtung, monatlich für Pflege.</b> Kein Rechtfertigen, kein Rabatt, kein „passt das?“. So wirst du vom Einmal-Verkäufer zum bezahlten Partner. Dann zurück zu Station 1.',
+  p:'Er hat geantwortet: „[seine Nachricht einfügen]". Schreib meine Antwort, max. 5 Sätze: Freude, dass es passt · ein Satz, was noch fehlt (Impressum, echte Fotos, Domain) · dann genau zwei Optionen: einmalig [z. B. 799 €] für Seite + Domain + Einrichtung, oder [z. B. 49 €/Monat] für Pflege, Änderungen und Erreichbarkeit. Kein Rechtfertigen, kein „Rabatt", keine Frage „passt das?". Endet mit: „Welche Variante passt besser zu euch?"'}
+];
+var ring=document.getElementById('ring'),cur=0,nodes=[];
+S.forEach(function(s,i){
+  var a=(-90+i*360/S.length)*Math.PI/180, x=50+38*Math.cos(a), y=50+38*Math.sin(a);
+  var b=document.createElement('button'); b.type='button'; b.className='node'; b.style.left=x+'%'; b.style.top=y+'%';
+  b.innerHTML='<span class="dot">'+(i+1)+'</span><span class="lb">'+s.t+'</span>';
+  b.setAttribute('aria-label','Station '+(i+1)+': '+s.t);
+  b.addEventListener('click',function(){show(i)}); ring.appendChild(b); nodes.push(b);
+});
+function show(i){
+  cur=(i+S.length)%S.length; var s=S[cur];
+  nodes.forEach(function(n,j){n.classList.toggle('on',j===cur)});
+  document.getElementById('d_nr').textContent='Station '+(cur+1)+' von '+S.length+' · '+s.k;
+  document.getElementById('d_t').textContent=s.t;
+  document.getElementById('d_meta').innerHTML=s.s.map(function(x){return '<span class="s">'+x+'</span>'}).join('')+'<span>'+s.z+'</span>';
+  document.getElementById('d_bd').innerHTML=s.d;
+  document.getElementById('d_pn').textContent=s.pn;
+  document.getElementById('d_p').textContent=s.p;
+}
+document.getElementById('prev').addEventListener('click',function(){show(cur-1)});
+document.getElementById('next').addEventListener('click',function(){show(cur+1)});
+function cp(btn){
+  var pre=btn.closest('.tpl').querySelector('pre'), t=pre.innerText;
+  var ok=function(){btn.textContent='KOPIERT ✓';setTimeout(function(){btn.textContent='COPY'},1500)};
+  var fb=function(){var r=document.createRange();r.selectNodeContents(pre);var sel=getSelection();sel.removeAllRanges();sel.addRange(r);btn.textContent='MARKIERT'};
+  try{navigator.clipboard.writeText(t).then(ok,fb)}catch(e){fb()}
+}
+show(0);
+</script>
+</body>
+</html>

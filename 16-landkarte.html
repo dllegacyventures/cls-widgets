@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CLS · Die Landkarte der 9 Schalter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  :root { --bg:#080706; --panel:#0e0d0b; --ink:#f2efe8; --muted:rgba(242,239,232,.6); --faint:rgba(242,239,232,.32); --line:rgba(242,239,232,.14); --am:#ff9f1c; --clay:#d97757; }
+  body { background:var(--bg); color:var(--ink); font-family:'Archivo',sans-serif; line-height:1.6; padding:36px 18px 60px; }
+  .wrap { max-width:860px; margin:0 auto; }
+  .kicker { font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.3em; color:var(--am); text-transform:uppercase; margin-bottom:14px; }
+  h1 { font-family:'Anton',sans-serif; font-weight:400; text-transform:uppercase; font-size:clamp(30px,6vw,50px); line-height:1.02; margin-bottom:14px; }
+  h1 .am { color:var(--am); }
+  .promise { font-size:clamp(18px,3vw,22px); font-style:italic; border-left:3px solid var(--am); padding:4px 0 4px 16px; margin-bottom:14px; }
+  .lead { color:var(--muted); font-size:16.5px; margin-bottom:22px; max-width:660px; }
+  .lead b { color:var(--ink); }
+
+  .prog { display:flex; align-items:center; gap:14px; margin-bottom:14px; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); }
+  .prog .bar { flex:1; height:6px; background:var(--line); }
+  .prog .bar i { display:block; height:100%; width:0; background:var(--am); transition:width .3s; }
+  .prog b { color:var(--am); font-weight:500; }
+
+  .map { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+  .tile { position:relative; text-align:left; border:1px solid var(--line); background:var(--panel); color:var(--ink); padding:16px 14px 14px; min-height:132px; cursor:pointer; font-family:inherit; display:flex; flex-direction:column; gap:4px; transition:border-color .2s, background .2s, box-shadow .2s; }
+  .tile:hover { border-color:rgba(255,159,28,.6); }
+  .tile:focus-visible { outline:2px solid var(--am); outline-offset:2px; }
+  .tile .n { font-family:'Anton',sans-serif; font-size:34px; line-height:1; color:var(--faint); }
+  .tile .nm { font-weight:700; font-size:15.5px; line-height:1.25; overflow-wrap:anywhere; hyphens:auto; }
+  .tile .st { margin-top:auto; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--faint); }
+  .tile.free .st { color:rgba(255,159,28,.75); }
+  .tile.clone { border-color:var(--clay); background:rgba(217,119,87,.07); }
+  .tile.clone .st { color:var(--clay); }
+  .tile.sel { border-color:var(--am); }
+  .tile.on { background:rgba(255,159,28,.14); border-color:var(--am); box-shadow:0 0 22px rgba(255,159,28,.28), inset 0 0 0 1px rgba(255,159,28,.4); }
+  .tile.on .n { color:var(--am); }
+  .tile .dot { position:absolute; top:12px; right:12px; width:10px; height:10px; border-radius:50%; border:1px solid var(--faint); }
+  .tile.on .dot { background:var(--am); border-color:var(--am); }
+  @media (max-width:520px){ .map { gap:6px; } .tile { min-height:112px; padding:12px 10px; } .tile .n { font-size:26px; } .tile .nm { font-size:13px; } .tile .st { font-size:9px; letter-spacing:.12em; } }
+
+  .detail { overflow-wrap:anywhere; margin-top:14px; border:1px solid var(--am); background:rgba(255,159,28,.05); padding:20px 22px; }
+  .detail .h { display:flex; justify-content:space-between; gap:12px; align-items:baseline; flex-wrap:wrap; margin-bottom:12px; }
+  .detail .h b { font-family:'Anton',sans-serif; font-weight:400; font-size:26px; text-transform:uppercase; }
+  .detail .h span { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--am); }
+  .detail .blk { border-top:1px solid var(--line); padding:12px 0; }
+  .detail .lab { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--muted); margin-bottom:4px; }
+  .detail p { font-size:15.5px; }
+  .detail .pr { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--bg); background:var(--am); padding:2px 7px; margin-right:6px; white-space:nowrap; }
+  .tog { margin-top:8px; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.14em; text-transform:uppercase; padding:12px 18px; cursor:pointer; border:1px solid var(--am); background:transparent; color:var(--am); }
+  .tog.on { background:var(--am); color:var(--bg); }
+  .tog:focus-visible { outline:2px solid var(--am); outline-offset:2px; }
+  .lock { margin-top:10px; font-size:13.5px; color:var(--clay); }
+
+  .legend { display:flex; gap:18px; flex-wrap:wrap; margin-top:18px; font-size:13px; color:var(--muted); }
+  .legend i { display:inline-block; width:11px; height:11px; margin-right:7px; vertical-align:-1px; border:1px solid var(--line); }
+  .legend .l1 { border-color:rgba(255,159,28,.75); } .legend .l2 { background:var(--panel); } .legend .l3 { border-color:var(--clay); background:rgba(217,119,87,.2); } .legend .l4 { background:var(--am); border-color:var(--am); }
+  .principle { margin-top:26px; border-left:3px solid var(--am); background:rgba(255,159,28,.05); padding:16px 20px; color:var(--muted); font-size:15.5px; }
+  .principle b { color:var(--ink); }
+  .footer { margin-top:40px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.24em; color:var(--faint); text-transform:uppercase; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">CLS · Die Landkarte</div>
+  <h1>Neun Schalter. <span class="am">Einer nach dem anderen.</span></h1>
+  <p class="promise">„Du baust, bevor du fragst — und am Ende baut es sich selbst.“</p>
+  <p class="lead">Tipp auf einen Schalter: was er tut, woran du merkst, dass er dir fehlt, und dein erster Handgriff dazu. Sitzt er, schaltest du ihn <b>an</b>. Die Reihenfolge ist fest: 4 vor 5, 5 vor 6. Schalter 9 kommt zuletzt.</p>
+
+  <div class="prog"><span><b id="cnt">0</b> von 9 an</span><div class="bar"><i id="barI"></i></div></div>
+  <div class="map" id="map"></div>
+  <div class="detail" id="detail" aria-live="polite"></div>
+
+  <div class="legend"><span><i class="l1"></i>verschenkt (1–3)</span><span><i class="l2"></i>Produkt (4–8)</span><span><i class="l3"></i>Klon-Schalter</span><span><i class="l4"></i>bei dir an</span></div>
+
+  <div class="principle"><b>CLS ist kein Webseiten-Business.</b> Die Webseiten sind nur der erste bezahlte Auftrag des Klons. Keiner der Schalter hat mit Webseiten zu tun: Du lernst sie am Beispiel Webseite und nimmst sie überallhin mit.</div>
+
+  <div class="footer">CLS — Clone Looping System</div>
+</div>
+<script>
+  var S = [
+    {n:1, nm:'Umkehr-Schalter', st:'verschenkt', cls:'free',
+      tut:'Du lieferst das Ergebnis, bevor du es anbietest. Keine Nachricht mit einem Versprechen, sondern eine Nachricht mit dem fertigen Ding.',
+      fehlt:'Deine Nachrichten fragen, ob jemand Interesse hat, statt einen fertigen Link mitzuschicken.',
+      hand:[['6','Die Übergabe'],'Die fertige Seite als Link schicken. Kein Verkauf, kein Preis, keine Terminfrage.']},
+    {n:2, nm:'Spiegel-Schalter', st:'verschenkt', cls:'free',
+      tut:'Er liest seinen eigenen Fehler, nicht deine Werbung. Die Nachricht handelt von ihm, nicht von dir.',
+      fehlt:'Deine Nachricht fängt mit dir oder deinem Angebot an, statt mit dem, was du auf seinem Profil gesehen hast.',
+      hand:[['1b','Die Auswahl'],'Das Missverhältnis finden (z. B. „4,8 Sterne, aber keine Webseite“) und genau diesen Punkt in die Übergabe schreiben.']},
+    {n:3, nm:'Doppel-Schalter', st:'verschenkt', cls:'free',
+      tut:'Zwei Preise, eine Wahl. Einmalig und monatlich: Aus dem Einmal-Verkäufer wird ein bezahlter Partner.',
+      fehlt:'Du nennst nur einen Preis, und nach dem Verkauf ist die Verbindung zum Betrieb vorbei.',
+      hand:[['7','Wenn er antwortet'],'Genau zwei Optionen nennen und mit „Welche Variante passt besser zu euch?“ enden.']},
+    {n:4, nm:'Filter-Schalter', st:'Produkt', cls:'',
+      tut:'Wen du überhaupt ansprichst. Entscheidet, ob 20 Leute nicht zuhören oder 3 von 5 die Seite sehen wollen.',
+      fehlt:'Du baust für Betriebe, die ohnehin keinen Grund haben zuzuhören, etwa schwache Bewertungen und keine Seite.',
+      hand:[['1a','Die Liste'],'15 Betriebe als Tabelle, gute Bewertungen (4,3+) mit schwacher oder fehlender Webseite nach oben sortiert.']},
+    {n:5, nm:'Stopp-Schalter', st:'Produkt', cls:'',
+      tut:'Was die KI auf gar keinen Fall tun darf. Der Unterschied zwischen dem Ergebnis, das jemand kauft, und dem, das er nicht kauft.',
+      fehlt:'Auf deinen Seiten stehen Öffnungszeiten, Preise oder Bewertungen, die du nie in einer Quelle gesehen hast.',
+      hand:[['0','Die Stopp-Regeln'],'Die sechs Regeln einmal in jeden neuen Claude-Chat kopieren, bevor du irgendetwas baust.']},
+    {n:6, nm:'Zeit-Schalter', st:'Produkt', cls:'',
+      tut:'Wann du nachfasst und wann du aufhörst.',
+      fehlt:'Du schickst einmal und hoffst, oder du hakst ohne Ende nach.',
+      hand:[['8','Nachfassen'],'Zwei Nachfasser, die etwas Neues bringen. Dann Stopp, der nächste Betrieb wartet schon.']},
+    {n:7, nm:'Preis-Schalter', st:'Produkt', cls:'',
+      tut:'Die Zahl nennen, ohne dich zu rechtfertigen.',
+      fehlt:'Nach der Zahl kommt eine Erklärung, warum sie so hoch ist, oder gleich ein Rabatt.',
+      hand:[['7','Wenn er antwortet'],'Kein Rechtfertigen, kein „Rabatt“, keine Frage „passt das?“.']},
+    {n:8, nm:'Kipp-Schalter', st:'Produkt', cls:'',
+      tut:'Der eine Übergang, an dem Gespräche kippen.',
+      fehlt:'Das Gespräch ist freundlich, aber am Ende hat niemand entschieden.',
+      hand:[['7','Wenn er antwortet'],'Mit einer Wahl enden statt mit einer offenen Frage: „Welche Variante passt besser zu euch?“']},
+    {n:9, nm:'Klon-Schalter', st:'das eigentliche Produkt', cls:'clone',
+      tut:'Macht aus dem Ablauf einen Mitarbeiter. Der nicht vergisst, nicht wartet, rund um die Uhr arbeitet.',
+      fehlt:'Du machst jeden Schritt jedes Mal selbst von Hand.',
+      hand:[['1a → 6','Der Tagesablauf'],'Erst den Ablauf von Hand sitzen lassen, ein Betrieb pro Tag. Was es noch nicht gibt, kann man nicht klonen.'],
+      lock:'Kommt zuletzt: erst wenn 4 bis 8 an sind.'}
+  ];
+  var KEY='cls-landkarte-an', an={}, sel=0;
+  try { an = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch(e){ an = {}; }
+  function save(){ try { localStorage.setItem(KEY, JSON.stringify(an)); } catch(e){} }
+
+  var map=document.getElementById('map'), det=document.getElementById('detail');
+  function render(){
+    map.innerHTML = S.map(function(s,i){
+      return '<button type="button" class="tile '+s.cls+(an[s.n]?' on':'')+(i===sel?' sel':'')+'" data-i="'+i+'" aria-pressed="'+(i===sel)+'"><span class="dot"></span><span class="n">'+s.n+'</span><span class="nm">'+s.nm+'</span><span class="st">'+s.st+'</span></button>';
+    }).join('');
+    var s=S[sel], isOn=!!an[s.n];
+    det.innerHTML = '<div class="h"><b>'+s.n+' · '+s.nm+'</b><span>'+s.st+'</span></div>'+
+      '<div class="blk"><div class="lab">Was er tut</div><p>'+s.tut+'</p></div>'+
+      '<div class="blk"><div class="lab">Woran du merkst, dass er fehlt</div><p>'+s.fehlt+'</p></div>'+
+      '<div class="blk"><div class="lab">Dein erster Handgriff</div><p><span class="pr">Prompt '+s.hand[0][0]+'</span><b>'+s.hand[0][1]+'.</b> '+s.hand[1]+'</p></div>'+
+      (s.lock?'<p class="lock">🔒 '+s.lock+'</p>':'')+
+      '<button type="button" class="tog'+(isOn?' on':'')+'" id="tog">'+(isOn?'✓ Schalter ist an':'Schalter anschalten')+'</button>';
+    var c=Object.keys(an).filter(function(k){return an[k];}).length;
+    document.getElementById('cnt').textContent=c;
+    document.getElementById('barI').style.width=(c/9*100)+'%';
+  }
+  map.addEventListener('click', function(e){ var t=e.target.closest('.tile'); if(!t) return; sel=+t.dataset.i; render(); });
+  det.addEventListener('click', function(e){ if(!e.target.closest('#tog')) return; var n=S[sel].n; an[n]=!an[n]; save(); render(); });
+  render();
+</script>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CLS · Dein Ziel-Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  :root { --bg:#080706; --panel:#0e0d0b; --ink:#f2efe8; --muted:rgba(242,239,232,.6); --faint:rgba(242,239,232,.32); --line:rgba(242,239,232,.14); --am:#ff9f1c; }
+  body { background:var(--bg); color:var(--ink); font-family:'Archivo',sans-serif; line-height:1.6; padding:36px 18px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  .kicker { font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.3em; color:var(--am); text-transform:uppercase; margin-bottom:14px; }
+  h1 { font-family:'Anton',sans-serif; font-weight:400; text-transform:uppercase; font-size:clamp(30px,6vw,50px); line-height:1.02; margin-bottom:14px; }
+  h1 .am, h2 .am { color:var(--am); }
+  h2 { font-family:'Anton',sans-serif; font-weight:400; text-transform:uppercase; font-size:24px; margin:0 0 14px; }
+  .lead { color:var(--muted); font-size:17px; margin-bottom:30px; max-width:680px; }
+  .lead b { color:var(--ink); }
+
+  .cols { display:grid; grid-template-columns:minmax(0,380px) minmax(0,1fr); gap:24px; align-items:start; }
+  @media (max-width:880px){ .cols { grid-template-columns:1fr; } }
+
+  .form { border:1px solid var(--line); background:var(--panel); padding:20px; display:flex; flex-direction:column; gap:14px; }
+  .f label { display:block; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+  .f input, .f textarea { width:100%; background:#050505; border:1px solid var(--line); color:var(--ink); font-family:'Archivo',sans-serif; font-size:15px; padding:10px 12px; outline:none; }
+  .f textarea { resize:vertical; min-height:62px; }
+  .f input:focus, .f textarea:focus { border-color:var(--am); }
+  .row2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .sep { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.24em; text-transform:uppercase; color:var(--am); border-top:1px solid var(--line); padding-top:12px; }
+  .hint { font-size:13px; color:var(--faint); }
+  .rowbtn button { font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.1em; padding:10px 16px; cursor:pointer; border:1px solid var(--line); background:transparent; color:var(--muted); }
+  .rowbtn button:hover { border-color:var(--am); color:var(--am); }
+
+  /* Das Board */
+  .board { background:#0B0C0E; border:1px solid var(--line); padding:26px 24px; display:flex; flex-direction:column; gap:18px; }
+  .b-eb { display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--faint); }
+  .b-eb b { color:#D97757; font-weight:500; }
+  .b-h { font-family:'Anton',sans-serif; font-weight:400; text-transform:uppercase; font-size:clamp(28px,4.4vw,44px); line-height:1.02; }
+  .b-h .am { color:var(--am); }
+  .b-quote { border:1px solid var(--line); background:linear-gradient(135deg,rgba(255,159,28,.16),rgba(217,119,87,.06) 60%,transparent); padding:26px 22px; min-height:130px; display:flex; flex-direction:column; justify-content:flex-end; gap:10px; }
+  .b-quote .q { font-size:clamp(18px,2.4vw,24px); font-style:italic; font-weight:500; line-height:1.3; }
+  .b-quote .tag { align-self:flex-start; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; border:1px solid var(--line); padding:4px 10px; color:var(--muted); }
+  .b-quote .tag b { color:var(--am); font-weight:500; }
+  .b-grid { display:grid; grid-template-columns:1.2fr 1fr; gap:12px; }
+  @media (max-width:640px){ .b-grid { grid-template-columns:1fr; } }
+  .card { border:1px solid var(--line); background:var(--panel); padding:16px; }
+  .card.focal { border-color:var(--am); background:rgba(255,159,28,.07); }
+  .card .eb { font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.2em; text-transform:uppercase; color:var(--faint); margin-bottom:10px; }
+  .math { display:flex; align-items:flex-end; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
+  .math .n { font-family:'Anton',sans-serif; font-size:30px; line-height:1; }
+  .math .n small { display:block; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em; color:var(--faint); margin-top:4px; text-transform:uppercase; }
+  .math .n.acc { color:var(--am); }
+  .math .op { font-family:'JetBrains Mono',monospace; color:var(--muted); font-size:18px; padding-bottom:18px; }
+  .sl { display:grid; grid-template-columns:110px 1fr 56px; gap:8px; align-items:center; font-size:13px; color:var(--muted); margin-top:6px; }
+  .sl output { font-family:'JetBrains Mono',monospace; color:var(--ink); text-align:right; }
+  input[type=range] { accent-color:var(--am); width:100%; }
+  .card ul { list-style:none; display:flex; flex-direction:column; gap:8px; }
+  .card li { padding-left:22px; position:relative; font-size:15px; }
+  .card li::before { content:''; position:absolute; left:0; top:6px; width:11px; height:11px; border:1px solid var(--am); }
+  .note { font-size:13px; color:var(--faint); margin-top:8px; }
+  .tl { display:grid; grid-template-columns:repeat(4,1fr); gap:0; position:relative; padding-top:22px; }
+  .tl::before { content:''; position:absolute; left:6px; right:6px; top:28px; height:1px; background:var(--line); }
+  .st { position:relative; padding-right:10px; }
+  .st::before { content:''; position:absolute; left:0; top:-0px; width:12px; height:12px; border-radius:50%; background:#0B0C0E; border:1px solid var(--ink); }
+  .st.goal::before { background:var(--am); border-color:var(--am); }
+  .st .w { font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--faint); margin-top:20px; }
+  .st.goal .w, .st.goal .t { color:var(--am); }
+  .st .t { font-weight:700; font-size:14.5px; margin-top:4px; word-break:break-word; }
+  @media (max-width:560px){ .tl { grid-template-columns:1fr 1fr; row-gap:18px; } .tl::before { display:none; } }
+  .b-foot { border-top:1px solid var(--line); padding-top:12px; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--faint); }
+
+  .tip { margin-top:18px; border:1px solid var(--am); background:rgba(255,159,28,.05); padding:14px 16px; font-size:15px; color:var(--muted); }
+  .tip b { color:var(--am); }
+  .footer { margin-top:40px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.24em; color:var(--faint); text-transform:uppercase; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">CLS · Start · Dein Ziel</div>
+  <h1>Dein <span class="am">Ziel-Board.</span></h1>
+  <p class="lead">Dein Klon arbeitet aus deinen Zielen heraus, nicht aus einzelnen Befehlen. Deshalb steht am Anfang dein Ziel, <b>in deinen eigenen Worten</b>. Füll das Formular aus, daneben entsteht dein Board (auf dem Handy darunter). Alles bleibt nur in deinem Browser.</p>
+
+  <div class="cols">
+    <div class="form" id="form">
+      <div class="f"><label for="name">Dein Vorname</label><input id="name" placeholder="z. B. Priscilla"></div>
+      <div class="row2">
+        <div class="f"><label for="betrag">Ziel pro Monat</label><input id="betrag" placeholder="2.000–3.000 €"></div>
+        <div class="f"><label for="bis">Bis wann</label><input id="bis" placeholder="in 6 Monaten"></div>
+      </div>
+      <div class="f"><label for="zeit">Zeit pro Tag</label><input id="zeit" placeholder="1 Stunde neben dem Job"></div>
+
+      <div class="sep">Drei Stufen</div>
+      <div class="f"><label for="m3">In 3 Monaten</label><input id="m3" placeholder="erste Verkäufe"></div>
+      <div class="f"><label for="m6">In 6 Monaten</label><input id="m6" placeholder="Ziel pro Monat erreicht"></div>
+      <div class="f"><label for="m12">In 12 Monaten</label><input id="m12" placeholder="doppelte Zeit, doppeltes Ziel"></div>
+
+      <div class="sep">Augen zu, in einem Jahr wieder auf</div>
+      <p class="hint">Was siehst du vor dir, das dir zeigt: Es ist wahr geworden?</p>
+      <div class="f"><label for="j1">Punkt 1</label><input id="j1" placeholder="3 Zimmer mit Balkon"></div>
+      <div class="f"><label for="j2">Punkt 2</label><input id="j2" placeholder="ein Auto ohne Werkstatt"></div>
+      <div class="f"><label for="j3">Punkt 3</label><input id="j3" placeholder=""></div>
+      <div class="f"><label for="j4">Punkt 4</label><input id="j4" placeholder=""></div>
+
+      <div class="sep">Dein Warum</div>
+      <div class="f"><label for="fuer">Für wen machst du es?</label><input id="fuer" placeholder="Papa"></div>
+      <div class="f"><label for="satz">Dein Satz</label><textarea id="satz" placeholder="Ich will einmal der Problemlöser sein."></textarea></div>
+      <div class="rowbtn"><button type="button" id="reset">Alles leeren</button></div>
+    </div>
+
+    <div>
+      <div class="board" id="board">
+        <div class="b-eb"><span><b>Clone Looping System</b> · Ziel-Board</span><span id="o_name">Dein Name</span></div>
+        <div class="b-h" id="o_h"></div>
+        <div class="b-quote">
+          <div class="q" id="o_satz"></div>
+          <div class="tag"><b>Warum</b> · <span id="o_fuer"></span></div>
+        </div>
+        <div class="b-grid">
+          <div class="card focal">
+            <div class="eb">Die Rechnung · Beispiel</div>
+            <div class="math">
+              <div class="n" id="r_s">20<small>Seiten</small></div><div class="op">×</div>
+              <div class="n" id="r_q">25 %<small>sagen ja</small></div><div class="op">=</div>
+              <div class="n acc" id="r_v">5<small>Verkäufe</small></div>
+            </div>
+            <div class="math">
+              <div class="n acc" id="r_v2">5<small>Verkäufe</small></div><div class="op">×</div>
+              <div class="n" id="r_p">450 €<small>je Seite</small></div><div class="op">=</div>
+              <div class="n acc" id="r_u">2.250 €<small>im Monat</small></div>
+            </div>
+            <div class="sl"><label for="s_seiten">Seiten / Monat</label><input type="range" id="s_seiten" min="5" max="60" step="1" value="20"><output id="v_seiten">20</output></div>
+            <div class="sl"><label for="s_quote">Ja-Quote</label><input type="range" id="s_quote" min="5" max="50" step="1" value="25"><output id="v_quote">25 %</output></div>
+            <div class="sl"><label for="s_preis">Preis je Seite</label><input type="range" id="s_preis" min="200" max="1000" step="10" value="450"><output id="v_preis">450 €</output></div>
+            <p class="note">Beispielrechnung, keine Zusage. Dazu kommt je Verkauf die monatliche Pflege. Den Preis legst du selbst fest.</p>
+          </div>
+          <div class="card">
+            <div class="eb">In einem Jahr</div>
+            <ul id="o_jahr"></ul>
+            <p class="note" id="o_zeit"></p>
+          </div>
+        </div>
+        <div class="tl">
+          <div class="st"><div class="w">Heute</div><div class="t">Ziel steht</div></div>
+          <div class="st"><div class="w">Monat 3</div><div class="t" id="o_m3"></div></div>
+          <div class="st goal"><div class="w">Monat 6</div><div class="t" id="o_m6"></div></div>
+          <div class="st"><div class="w">Monat 12</div><div class="t" id="o_m12"></div></div>
+        </div>
+        <div class="b-foot"><span>Du baust, bevor du fragst</span><span>Schritt für Schritt</span></div>
+      </div>
+      <div class="tip"><b>So nutzt du es:</b> Mach einen Screenshot vom Board und setz ihn als Handy-Hintergrund. Dann siehst du dein Ziel jedes Mal, bevor du dein Handy entsperrst. Schick das Bild auch in deine CLS-Gruppe, dann weiß dein Team, wofür du arbeitest.</div>
+    </div>
+  </div>
+
+  <div class="footer">CLS — Clone Looping System</div>
+</div>
+<script>
+(function(){
+  var KEY='cls-ziel-board-v1';
+  var ids=['name','betrag','bis','zeit','m3','m6','m12','j1','j2','j3','j4','fuer','satz','s_seiten','s_quote','s_preis'];
+  var $=function(id){return document.getElementById(id)};
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function val(id,fb){var v=$(id).value.trim();return v||fb}
+  function eur(n){return n.toLocaleString('de-DE')+' €'}
+  try{var saved=JSON.parse(localStorage.getItem(KEY)||'{}');ids.forEach(function(i){if(saved[i]!=null)$(i).value=saved[i]})}catch(e){}
+  function render(){
+    $('o_name').textContent=val('name','Dein Name');
+    $('o_h').innerHTML=esc(val('bis','In 6 Monaten')).replace(/^in /,'In ')+' auf <span class="am">'+esc(val('betrag','2.000–3.000 €'))+'</span> im Monat.';
+    $('o_satz').textContent='„'+val('satz','Schreib hier deinen Satz. Den einen, der dich morgens aufstehen lässt.')+'“';
+    $('o_fuer').textContent=val('fuer','für wen du es machst');
+    $('o_m3').textContent=val('m3','erste Verkäufe');
+    $('o_m6').textContent=val('m6','Ziel erreicht');
+    $('o_m12').textContent=val('m12','der nächste Schritt');
+    var j=['j1','j2','j3','j4'].map(function(i){return $(i).value.trim()}).filter(Boolean);
+    if(!j.length) j=['Was du in einem Jahr vor dir siehst'];
+    $('o_jahr').innerHTML=j.map(function(x){return '<li>'+esc(x)+'</li>'}).join('');
+    $('o_zeit').textContent=$('zeit').value.trim()?'Dein Einsatz: '+$('zeit').value.trim()+'.':'';
+    var s=+$('s_seiten').value,q=+$('s_quote').value,p=+$('s_preis').value;
+    var v=Math.round(s*q/100), u=v*p;
+    $('v_seiten').textContent=s; $('v_quote').textContent=q+' %'; $('v_preis').textContent=eur(p);
+    $('r_s').innerHTML=s+'<small>Seiten</small>'; $('r_q').innerHTML=q+' %<small>sagen ja</small>';
+    $('r_v').innerHTML=v+'<small>Verkäufe</small>'; $('r_v2').innerHTML=v+'<small>Verkäufe</small>';
+    $('r_p').innerHTML=eur(p)+'<small>je Seite</small>'; $('r_u').innerHTML=eur(u)+'<small>im Monat</small>';
+    var o={};ids.forEach(function(i){o[i]=$(i).value});
+    try{localStorage.setItem(KEY,JSON.stringify(o))}catch(e){}
+  }
+  ids.forEach(function(i){$(i).addEventListener('input',render)});
+  $('reset').addEventListener('click',function(){
+    ids.forEach(function(i){$(i).value=''});
+    $('s_seiten').value=20;$('s_quote').value=25;$('s_preis').value=450;
+    render();
+  });
+  render();
+})();
+</script>
+</body>
+</html>

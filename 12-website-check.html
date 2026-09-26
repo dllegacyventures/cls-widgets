@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CLS · Würdest du da reingehen?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  :root { --bg:#080706; --panel:#0e0d0b; --ink:#f2efe8; --muted:rgba(242,239,232,.6); --faint:rgba(242,239,232,.32); --line:rgba(242,239,232,.14); --am:#ff9f1c; }
+  body { background:var(--bg); color:var(--ink); font-family:'Archivo',sans-serif; line-height:1.6; padding:36px 18px 60px; }
+  .wrap { max-width:860px; margin:0 auto; }
+  .kicker { font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.3em; color:var(--am); text-transform:uppercase; margin-bottom:14px; }
+  h1 { font-family:'Anton',sans-serif; font-weight:400; text-transform:uppercase; font-size:clamp(30px,6vw,52px); line-height:1.02; margin-bottom:14px; }
+  h1 .am, h2 .am { color:var(--am); }
+  h2 { font-family:'Anton',sans-serif; font-weight:400; text-transform:uppercase; font-size:24px; margin:38px 0 16px; }
+  .lead { color:var(--muted); font-size:17px; max-width:660px; margin-bottom:28px; }
+  .lead b { color:var(--ink); }
+
+  .top { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:18px; }
+  @media (max-width:640px){ .top { grid-template-columns:1fr; } }
+  .f label { display:block; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+  .f input { width:100%; background:#050505; border:1px solid var(--line); color:var(--ink); font-family:'Archivo',sans-serif; font-size:15px; padding:11px 12px; outline:none; }
+  .f input:focus { border-color:var(--am); }
+  .seg { display:flex; gap:8px; flex-wrap:wrap; }
+  .seg button { font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.1em; padding:10px 14px; background:none; border:1px solid var(--line); color:var(--muted); cursor:pointer; flex:1; }
+  .seg button.on { border-color:var(--am); color:var(--am); background:rgba(255,159,28,.07); }
+
+  .checks { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media (max-width:640px){ .checks { grid-template-columns:1fr; } }
+  .chk { display:grid; grid-template-columns:24px 1fr; gap:12px; align-items:start; border:1px solid var(--line); background:var(--panel); padding:14px 16px; cursor:pointer; user-select:none; }
+  .chk input { width:18px; height:18px; accent-color:var(--am); margin-top:3px; cursor:pointer; }
+  .chk .t { font-weight:700; font-size:15px; }
+  .chk .d { color:var(--muted); font-size:13.5px; }
+  .chk.miss { border-color:rgba(255,159,28,.55); background:rgba(255,159,28,.05); }
+  .hint { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--faint); margin:0 0 12px; letter-spacing:.06em; }
+
+  .result { display:grid; grid-template-columns:220px 1fr; gap:22px; align-items:center; border:1px solid var(--am); background:rgba(255,159,28,.04); padding:22px; margin-top:22px; }
+  @media (max-width:640px){ .result { grid-template-columns:1fr; justify-items:center; text-align:center; } }
+  .gauge text { font-family:'Anton',sans-serif; }
+  .verdict { font-family:'Anton',sans-serif; font-size:30px; text-transform:uppercase; line-height:1.05; margin-bottom:8px; }
+  .verdict.top { color:var(--am); }
+  .verdict.mid { color:var(--ink); }
+  .verdict.no { color:var(--faint); }
+  .why { color:var(--muted); font-size:15px; }
+  .why b { color:var(--ink); }
+
+  .out textarea { width:100%; min-height:130px; background:#050505; border:1px solid var(--am); color:var(--ink); font-family:'JetBrains Mono',monospace; font-size:13px; line-height:1.7; padding:16px; resize:vertical; }
+  .rowbtn { display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; }
+  .rowbtn button { font-family:'JetBrains Mono',monospace; font-size:13px; letter-spacing:.1em; padding:12px 22px; cursor:pointer; background:var(--am); color:#000; border:0; font-weight:700; }
+  .rowbtn button.ghost { background:none; color:var(--muted); border:1px solid var(--line); font-weight:400; }
+  .note { border-left:3px solid var(--am); padding:10px 14px; background:rgba(255,159,28,.05); color:var(--muted); font-size:14px; margin-top:14px; }
+  .note b { color:var(--ink); }
+  .footer { margin-top:40px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.24em; color:var(--faint); text-transform:uppercase; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">CLS · Trick · Filter-Schalter</div>
+  <h1>Würdest du <span class="am">da reingehen?</span></h1>
+  <p class="lead">Öffne die Seite eines Betriebs auf deinem Handy und schau sie an wie ein Kunde. <b>Tipp an, was fehlt.</b> Je größer die Lücke zwischen gutem Ruf und schwachem Auftritt, desto besser ist der Betrieb für dich. Und du bekommst den ersten Satz deiner Übergabe gleich mit.</p>
+
+  <div class="top">
+    <div class="f"><label for="name">Betrieb (optional)</label><input id="name" placeholder="Café Lindenhof" oninput="calc()"></div>
+    <div class="f"><label>Google-Bewertung</label>
+      <div class="seg"><button id="r1" class="on" onclick="setR(1)">4,3+ Sterne</button><button id="r0" onclick="setR(0)">darunter</button></div></div>
+    <div class="f"><label for="stars">Sterne (optional, z. B. 4,8)</label><input id="stars" placeholder="4,8" inputmode="decimal" oninput="calc()"></div>
+    <div class="f"><label>Eigene Webseite?</label>
+      <div class="seg"><button id="w1" class="on" onclick="setW(1)">ja</button><button id="w0" onclick="setW(0)">keine / nur Social</button></div></div>
+  </div>
+
+  <h2>Die 10 Punkte — <span class="am">tipp an, was fehlt</span></h2>
+  <p class="hint" id="hint">Angetippt = Mangel. Nicht angetippt = passt.</p>
+  <div class="checks" id="checks"></div>
+
+  <div class="result">
+    <svg class="gauge" viewBox="0 0 220 130" width="220" height="130" role="img" aria-label="Lücke">
+      <path d="M20 115 A90 90 0 0 1 200 115" fill="none" stroke="rgba(242,239,232,.12)" stroke-width="16"/>
+      <path id="arc" d="M20 115 A90 90 0 0 1 200 115" fill="none" stroke="#ff9f1c" stroke-width="16" stroke-dasharray="283" stroke-dashoffset="283" style="transition:stroke-dashoffset .35s"/>
+      <text id="gnum" x="110" y="98" text-anchor="middle" fill="#f2efe8" font-size="40">0</text>
+      <text x="110" y="122" text-anchor="middle" fill="rgba(242,239,232,.5)" font-size="11" style="font-family:'JetBrains Mono',monospace;letter-spacing:.2em">VON 10 MÄNGELN</text>
+    </svg>
+    <div><div class="verdict" id="verdict">—</div><p class="why" id="why"></p></div>
+  </div>
+
+  <h2>Dein erster Satz — <span class="am">Spiegel-Schalter</span></h2>
+  <p class="lead" style="margin-bottom:14px">Der Betrieb liest seinen eigenen Fehler, nicht deine Werbung. Diesen Satz setzt du an den Anfang deiner Übergabe-Nachricht, dahinter kommt der Link zur fertigen Seite.</p>
+  <div class="out"><textarea id="satz" readonly></textarea></div>
+  <div class="rowbtn"><button onclick="copySatz(this)">SATZ KOPIEREN</button><button class="ghost" onclick="reset()">NEUER BETRIEB</button></div>
+  <div class="note"><b>Unter 4,3 Sternen?</b> Dann lass ihn liegen. 2,9 Sterne und keine Seite ist kein Kunde, das ist ein Problem. Der nächste Betrieb auf deiner Liste wartet schon.</div>
+
+  <div class="footer">CLS — Clone Looping System</div>
+</div>
+<script>
+  var P = [
+    ['mobil','Auf dem Handy lesbar','Text und Knöpfe ohne Zoomen nutzbar','eure Seite auf dem Handy kaum lesbar ist'],
+    ['zeiten','Öffnungszeiten aktuell','stimmen mit Google überein','die Öffnungszeiten auf der Seite nicht zu Google passen'],
+    ['tel','Telefon antippbar','ein Tipp, und das Handy wählt','man euch von der Seite aus nicht mit einem Tipp anrufen kann'],
+    ['fotos','Echte Fotos','vom Betrieb, nicht aus Bilddatenbanken','man auf der Seite keine echten Fotos von euch sieht'],
+    ['bew','Bewertungen sichtbar','was Kunden sagen, steht auf der Seite','eure guten Bewertungen auf der Seite gar nicht auftauchen'],
+    ['termin','Termin / Anfrage möglich','Formular, Buchung oder klarer Button','man auf der Seite keinen Termin und keine Anfrage schicken kann'],
+    ['speed','Lädt schnell','nach 3 Sekunden ist etwas zu sehen','die Seite auf dem Handy lange zum Laden braucht'],
+    ['klar','Klar, was sie anbieten','in 5 Sekunden verstanden','man auf den ersten Blick nicht versteht, was ihr anbietet'],
+    ['angebot','Angebot erkennbar','Leistungen, Karte oder Preise sichtbar','man euer Angebot auf der Seite nicht sieht'],
+    ['heute','Sieht nach heute aus','nicht nach 2012','die Seite viele Jahre alt wirkt']
+  ];
+  var R = 1, W = 1, touched = false;
+  var box = document.getElementById('checks');
+  P.forEach(function(p){
+    var l = document.createElement('label'); l.className='chk';
+    l.innerHTML = '<input type="checkbox" id="c_'+p[0]+'"><span><span class="t">'+p[1]+'</span><br><span class="d">'+p[2]+'</span></span>';
+    l.querySelector('input').addEventListener('change', function(){ touched = true; l.classList.toggle('miss', this.checked); calc(); });
+    box.appendChild(l);
+  });
+  function setR(v){ R=v; document.getElementById('r1').classList.toggle('on',v===1); document.getElementById('r0').classList.toggle('on',v===0); calc(); }
+  function setW(v){ W=v; document.getElementById('w1').classList.toggle('on',v===1); document.getElementById('w0').classList.toggle('on',v===0);
+    document.querySelectorAll('#checks input').forEach(function(i){ i.disabled = (v===0); });
+    document.getElementById('checks').style.opacity = v===0 ? .35 : 1;
+    document.getElementById('hint').textContent = v===0 ? 'Keine eigene Seite = alle 10 Punkte fehlen.' : 'Angetippt = Mangel. Nicht angetippt = passt.';
+    calc(); }
+  function missing(){ if(W===0) return P.slice(); return P.filter(function(p){ return document.getElementById('c_'+p[0]).checked; }); }
+  function calc(){
+    var m = missing(), n = m.length;
+    document.getElementById('gnum').textContent = n;
+    document.getElementById('arc').style.strokeDashoffset = 283 - 283*n/10;
+    var v = document.getElementById('verdict'), w = document.getElementById('why');
+    if(R===1 && W===1 && !touched){ v.textContent='—'; v.className='verdict no'; w.innerHTML='Tipp oben an, was auf seiner Seite fehlt. <b>Dann siehst du, ob er sich lohnt.</b>'; }
+    else if(R===0){ v.textContent='Weiter'; v.className='verdict no'; w.innerHTML='Unter 4,3 Sternen ist die Webseite nicht sein Hauptproblem. <b>Nicht ansprechen.</b>'; }
+    else if(n>=6){ v.textContent='Top-Kandidat'; v.className='verdict top'; w.innerHTML='Guter Ruf, schwacher Auftritt. Diese Lücke kostet ihn jeden Tag Kunden, die ihn googeln. <b>Heute noch bauen.</b>'; }
+    else if(n>=3){ v.textContent='Kandidat'; v.className='verdict mid'; w.innerHTML='Die Lücke ist da, aber kleiner. <b>Auf die Liste</b>, nach den Top-Kandidaten dran.'; }
+    else { v.textContent='Weiter'; v.className='verdict no'; w.innerHTML='Die Seite macht ihren Job. Hier ist wenig zu zeigen. <b>Nächster Betrieb.</b>'; }
+    document.getElementById('satz').value = satz(m);
+  }
+  function satz(m){
+    var name = document.getElementById('name').value.trim();
+    var st = document.getElementById('stars').value.trim();
+    var ruf = st ? st.replace('.',',')+' Sterne' : 'richtig gute Bewertungen';
+    var an = name ? 'Hallo liebes Team von '+name+', ' : 'Hallo, ';
+    if(R===0) return '— Unter 4,3 Sternen: diesen Betrieb nicht ansprechen. —';
+    if(W===0) return an+'ich war auf eurem Google-Profil: '+ruf+', aber keine eigene Webseite. Wer euch googelt, findet nur das Profil.';
+    if(m.length===0) return '— Noch nichts angetippt. Tipp die Punkte an, die auf seiner Seite fehlen. —';
+    var f = m.slice(0,2).map(function(p){ return p[3]; });
+    return an+'ich war auf eurem Google-Profil: '+ruf+'. Auf eurer Webseite ist mir aber aufgefallen, dass '+f.join(' und dass ')+'.';
+  }
+  function copySatz(btn){
+    var ta = document.getElementById('satz'); var old = btn.textContent;
+    function ok(){ btn.textContent='KOPIERT ✓'; setTimeout(function(){btn.textContent=old},1500); }
+    function fb(){ ta.focus(); ta.select(); btn.textContent='MARKIERT — JETZT KOPIEREN'; setTimeout(function(){btn.textContent=old},2500); }
+    try { navigator.clipboard.writeText(ta.value).then(ok, fb); } catch(e){ fb(); }
+  }
+  function reset(){ touched = false; document.querySelectorAll('#checks input').forEach(function(i){ i.checked=false; i.closest('.chk').classList.remove('miss'); });
+    document.getElementById('name').value=''; document.getElementById('stars').value=''; setR(1); setW(1); }
+  calc();
+</script>
+</body>
+</html>

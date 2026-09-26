@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CLS · Stitch-Befehle — Vorher / Nachher</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  :root { --bg:#080706; --panel:#0e0d0b; --ink:#f2efe8; --muted:rgba(242,239,232,.6); --faint:rgba(242,239,232,.32); --line:rgba(242,239,232,.14); --am:#ff9f1c; --ok:#5fb37a; --no:#d97757; }
+  body { background:var(--bg); color:var(--ink); font-family:'Archivo',sans-serif; line-height:1.6; padding:36px 18px 60px; }
+  .wrap { max-width:900px; margin:0 auto; }
+  .kicker { font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.3em; color:var(--am); text-transform:uppercase; margin-bottom:14px; }
+  h1 { font-family:'Anton',sans-serif; font-weight:400; text-transform:uppercase; font-size:clamp(30px,6vw,50px); line-height:1.02; margin-bottom:14px; }
+  h1 .am, h2 .am { color:var(--am); }
+  h2 { font-family:'Anton',sans-serif; font-weight:400; text-transform:uppercase; font-size:24px; margin:36px 0 14px; }
+  .lead { color:var(--muted); font-size:17px; margin-bottom:28px; max-width:660px; }
+  .lead b { color:var(--ink); }
+
+  /* Regel */
+  .rule { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  @media (max-width:640px){ .rule { grid-template-columns:minmax(0,1fr); } }
+  .rule .col { border:1px solid var(--line); background:var(--panel); padding:16px 18px; }
+  .rule .col.y { border-color:var(--ok); }
+  .rule .col.n { border-color:var(--no); }
+  .rule .lab { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.22em; text-transform:uppercase; margin-bottom:10px; }
+  .rule .y .lab { color:var(--ok); } .rule .n .lab { color:var(--no); }
+  .rule code { display:block; font-family:'JetBrains Mono',monospace; font-size:13px; background:#050505; border:1px solid var(--line); padding:10px 12px; margin-bottom:8px; white-space:pre-wrap; word-break:break-word; }
+  .rule p { font-size:14px; color:var(--muted); }
+  .rule .n code { text-decoration:line-through; text-decoration-color:var(--no); color:var(--muted); }
+
+  /* Filter */
+  .chips { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px; }
+  .chip { font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.14em; text-transform:uppercase; background:transparent; color:var(--muted); border:1px solid var(--line); padding:8px 14px; cursor:pointer; }
+  .chip.on { color:var(--bg); background:var(--am); border-color:var(--am); }
+  .chip:focus-visible, .copy:focus-visible { outline:2px solid var(--am); outline-offset:2px; }
+
+  /* Karten */
+  .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+  @media (max-width:760px){ .grid { grid-template-columns:minmax(0,1fr); } }
+  @media (max-width:400px){ .ph { transform:scale(.85); transform-origin:top center; margin-bottom:-29px; } .ph.desk { margin-bottom:-17px; } .vs { gap:4px; } .card { padding:14px; } }
+  .card { border:1px solid var(--line); background:var(--panel); padding:18px; display:flex; flex-direction:column; gap:12px; }
+  .card[hidden] { display:none; }
+  .card .top { display:flex; justify-content:space-between; gap:10px; align-items:baseline; }
+  .card .t { font-weight:700; font-size:16.5px; }
+  .card .tag { font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.2em; text-transform:uppercase; color:var(--faint); border:1px solid var(--line); padding:3px 8px; white-space:nowrap; }
+  .vs { display:flex; align-items:center; justify-content:center; gap:10px; background:#050505; border:1px solid var(--line); padding:14px 8px; }
+  .vs .arrow { font-family:'JetBrains Mono',monospace; color:var(--am); font-size:18px; }
+  .side { display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .side .cap { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--faint); }
+  .side.after .cap { color:var(--am); }
+  .cmd { position:relative; font-family:'JetBrains Mono',monospace; font-size:13px; background:#050505; border:1px solid var(--am); padding:12px 96px 12px 12px; white-space:pre-wrap; word-break:break-word; color:var(--ink); }
+  .copy { position:absolute; top:8px; right:8px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.1em; background:var(--am); color:var(--bg); border:0; padding:6px 9px; cursor:pointer; }
+  .card .why { font-size:14px; color:var(--muted); }
+
+  /* Mini-Handy */
+  .ph { width:104px; height:196px; border:2px solid rgba(242,239,232,.55); border-radius:14px; background:#f4f0e8; padding:7px 6px; display:flex; flex-direction:column; gap:4px; overflow:hidden; position:relative; --acc:var(--am); }
+  .ph.green { --acc:#2f7a4f; }
+  .ph.desk { width:170px; height:112px; border-radius:6px; padding:6px; }
+  .ph::before { content:""; display:block; width:28px; height:3px; border-radius:2px; background:rgba(0,0,0,.25); margin:0 auto 3px; flex:none; }
+  .ph.desk::before { width:100%; height:5px; border-radius:0; background:rgba(0,0,0,.12); margin:0 0 3px; }
+  .b { flex:none; background:#cfc8bb; border-radius:2px; }
+  .b.img { height:44px; background:linear-gradient(135deg,#a89c86,#7d715e); }
+  .b.img.inset { margin:0 10px; height:36px; }
+  .b.img.full { height:58px; margin:-3px -6px 0; border-radius:0; position:relative; }
+  .b.img.full::after { content:""; position:absolute; left:6px; bottom:6px; width:44px; height:5px; background:#fff; border-radius:1px; box-shadow:0 8px 0 -1px rgba(255,255,255,.7); }
+  .b.h { height:7px; width:70%; background:#3a352e; }
+  .b.h.big { height:10px; width:85%; }
+  .b.t { height:4px; width:92%; }
+  .b.t.s { width:60%; }
+  .b.t.big { height:6px; }
+  .b.btn { height:9px; width:42%; background:var(--acc); border-radius:3px; }
+  .b.btn.big { height:15px; width:80%; }
+  .b.btn.white { background:var(--acc); box-shadow:inset 0 0 0 3px var(--acc), inset 0 0 0 20px var(--acc); position:relative; }
+  .b.btn.white::after { content:""; position:absolute; left:25%; top:45%; width:50%; height:2px; background:#fff; }
+  .row { display:flex; gap:3px; flex:none; }
+  .row .b { flex:1; height:22px; background:#ddd6c9; border:1px solid #c7bfb1; }
+  .b.rev { height:14px; background:#e9e2d5; border:1px solid #cfc7b8; position:relative; }
+  .b.rev::before { content:"★★★★★"; position:absolute; left:3px; top:0; font-size:6px; color:var(--acc); letter-spacing:0; }
+  .car { display:flex; gap:3px; flex:none; overflow:hidden; margin-right:-6px; }
+  .car .b.rev { flex:0 0 78%; height:30px; }
+  .bar { position:absolute; left:0; right:0; bottom:0; height:18px; background:#2b2722; display:flex; gap:3px; padding:4px 5px; }
+  .bar i { flex:1; background:var(--acc); border-radius:2px; }
+  .b.tel { height:9px; width:55%; background:transparent; border:1.5px solid var(--acc); border-radius:3px; position:relative; }
+  .b.tel::before { content:"☎"; position:absolute; left:2px; top:-4px; font-size:8px; color:var(--acc); }
+  .b.map { height:30px; background:repeating-linear-gradient(45deg,#d6e1cf 0 5px,#c7d6be 5px 10px); border:1px solid #b3c3a8; position:relative; }
+  .b.map::after { content:""; position:absolute; left:45%; top:30%; width:7px; height:7px; border-radius:50% 50% 50% 0; transform:rotate(-45deg); background:var(--acc); }
+  .b.foto { height:40px; background:#e2dbcd; border:1.5px dashed #9b917f; position:relative; }
+  .b.foto::after { content:"[FOTO]"; position:absolute; inset:0; display:grid; place-content:center; font-family:'JetBrains Mono',monospace; font-size:7px; color:#6f6656; }
+  .gap { flex:none; height:0; } .gap.l { height:8px; }
+  .dcols { display:flex; gap:4px; flex:none; } .dcols > div { flex:1; display:flex; flex-direction:column; gap:3px; }
+
+  .principle { margin-top:28px; border-left:3px solid var(--am); background:rgba(255,159,28,.05); padding:16px 20px; color:var(--muted); font-size:15.5px; }
+  .principle b { color:var(--ink); }
+  .footer { margin-top:40px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.24em; color:var(--faint); text-transform:uppercase; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">CLS · Stopp-Schalter · Stitch-Spickzettel</div>
+  <h1>Stitch-Befehle, <span class="am">die sitzen.</span></h1>
+  <p class="lead">Kurze Befehle für den Stitch-Chat, jeder mit <b>Vorher → Nachher</b>. Kopieren, in Stitch einfügen, Ergebnis ansehen, nächster Befehl. Alles in <b>[eckigen Klammern]</b> ersetzt du.</p>
+
+  <h2>Die eine <span class="am">Regel</span></h2>
+  <div class="rule">
+    <div class="col y">
+      <div class="lab">✓ Eine Änderung pro Befehl</div>
+      <code>Make the hero image full-width, text bottom-left, button larger.</code>
+      <code>Show me the mobile view.</code>
+      <p>Ein Wunsch, ein Ergebnis. Du siehst sofort, ob es passt.</p>
+    </div>
+    <div class="col n">
+      <div class="lab">✕ Drei Wünsche in einem Satz</div>
+      <code>Make it green, add reviews as a carousel and put a sticky bar at the bottom.</code>
+      <p>Stitch verschluckt sich bei drei Wünschen in einem Satz. Einer geht unter, und du weißt nicht, welcher.</p>
+    </div>
+  </div>
+
+  <h2>Die <span class="am">Befehle</span></h2>
+  <div class="chips" id="chips" role="group" aria-label="Nach Bereich filtern"></div>
+  <div class="grid" id="grid"></div>
+
+  <div class="principle"><b>Stopp-Regeln gelten auch hier.</b> Texte kommen aus deinem Steckbrief (Prompt 3), nicht von Stitch. Keine erfundenen Bewertungen, kein nachgebautes Logo, Preise bleiben [OFFEN], bis der Inhaber sie nennt.</div>
+
+  <div class="footer">CLS — Clone Looping System</div>
+</div>
+<script>
+  // Bausteine für die Mini-Screens
+  var P = {
+    base:['img inset','h','t','t s','btn','gap l','row'],
+    heroFull:['img full','gap l','t','t s','row'],
+    placeholder:['img inset','h','t s','t s','btn','row'],
+    texts:['img inset','h big','t','t','t s','btn','row'],
+    noBar:['img inset','h','t','btn','row','t','t s'],
+    withBar:['img inset','h','t','btn','row','t','bar'],
+    telPlain:['img inset','h','t','t s','t','t s','map'],
+    telBtn:['img inset','h','t','tel','t','tel','map'],
+    revList:['h','rev','rev','rev','t s'],
+    revCar:['h','car','gap l','t','t s'],
+    desk:'desk',
+    mobile:['img inset','h','t','btn','row','rev'],
+    small:['img inset','h','t','t','t','t s','btn'],
+    big:['img inset','h big','t big','t big','t big','btn big'],
+    tight:['img inset','h','t','row','h','t','row'],
+    airy:['img inset','gap l','h','t','gap l','row','gap l','h'],
+    btnSmall:['img inset','h','t','btn','row'],
+    btnBig:['img inset','h','t','btn big white','row'],
+    stock:['img','h','t','img inset','t s'],
+    fotos:['foto','h','t','foto','t s'],
+    noHours:['img inset','h','t','t s','tel'],
+    hours:['img inset','h','t s','t s','t s','map','tel']
+  };
+  var C = [
+    {k:'hero', t:'Hero groß und klar', a:'baseAm', b:'heroFull', cmd:'Make the hero image full-width, text bottom-left, button larger.', why:'Der erste Blick entscheidet. Großes Foto, Name drauf, ein Knopf.'},
+    {k:'hero', t:'Der Knopf fällt auf', a:'btnSmall', b:'btnBig', cmd:'Make the main button [deep green] with white text and make it larger.', why:'Ein Knopf, eine Handlung. Anrufen, Termin, Tisch reservieren.'},
+    {k:'texte', t:'Echte Texte statt Platzhalter', a:'placeholder', b:'texts', cmd:'Replace placeholder texts with these: [Texte aus Schritt 3 einfügen]', why:'Die Texte schreibt Claude aus dem Steckbrief. Stitch setzt sie nur ein.'},
+    {k:'texte', t:'Bewertungen als Karussell', a:'revList', b:'revCar', cmd:'Make the reviews section carousel-style, one review per card, stars on top.', why:'Nur echte Zitate aus Google, mit Vorname und Monat.'},
+    {k:'texte', t:'Platzhalter statt Stock-Fotos', a:'stock', b:'fotos', cmd:'Replace all stock photos with neutral image placeholders labeled [FOTO].', why:'Bilder sind Vorschau, nicht Bestand. Die echten Fotos kommen vom Inhaber.'},
+    {k:'mobil', t:'Sticky-Leiste unten', a:'noBar', b:'withBar', cmd:'Add a sticky bottom bar on mobile with "Anrufen" and "Termin" buttons.', why:'Auf dem Handy ist der Anruf immer einen Daumen entfernt.'},
+    {k:'mobil', t:'Handy-Ansicht prüfen', a:'desk', b:'mobile', cmd:'Show me the mobile view.', why:'Die meisten Kunden des Betriebs sehen die Seite auf dem Handy. Prüf sie dort.'},
+    {k:'kontakt', t:'Telefon zum Antippen', a:'telPlain', b:'telBtn', cmd:'Use the phone number [Nummer] as tap-to-call everywhere.', why:'Die Nummer ist überall ein Knopf, nicht nur Text.'},
+    {k:'kontakt', t:'Öffnungszeiten und Karte', a:'noHours', b:'hours', cmd:'Add the opening hours [Öffnungszeiten] and the address with a map to the contact section.', why:'Nur die Zeiten aus dem Steckbrief. Was fehlt, bleibt [OFFEN].'},
+    {k:'stil', t:'Farbe des Betriebs', a:'baseAm', b:'baseGreen', cmd:'Change the accent color to [#2f7a4f] everywhere.', why:'Farbe aus Logo oder Fotos ableiten. Ein Akzent reicht.'},
+    {k:'stil', t:'Größere Schrift', a:'small', b:'big', cmd:'Make all body text larger and easier to read on mobile.', why:'Große Schrift, viel Luft. So steht es schon im Design-Prompt.'},
+    {k:'stil', t:'Mehr Luft zwischen Abschnitten', a:'tight', b:'airy', cmd:'Add more white space between the sections.', why:'Luft wirkt hochwertig und macht die Seite auf dem Handy lesbar.'}
+  ];
+  var CATS = [['alle','Alle'],['hero','Hero'],['texte','Texte'],['mobil','Mobil'],['kontakt','Kontakt'],['stil','Stil']];
+
+  function screen(key){
+    if (key === 'desk'){
+      return '<div class="ph desk"><div class="b img" style="height:34px"></div><div class="dcols"><div><div class="b h"></div><div class="b t"></div><div class="b t s"></div></div><div><div class="b t"></div><div class="b t"></div><div class="b btn"></div></div><div><div class="b t"></div><div class="b t s"></div><div class="b t"></div></div></div><div class="row"><div class="b"></div><div class="b"></div><div class="b"></div><div class="b"></div></div></div>';
+    }
+    var green = key === 'baseGreen';
+    var list = P[(key === 'baseAm' || key === 'baseGreen') ? 'base' : key];
+    var h = '';
+    list.forEach(function(x){
+      if (x === 'row') h += '<div class="row"><div class="b"></div><div class="b"></div><div class="b"></div></div>';
+      else if (x === 'car') h += '<div class="car"><div class="b rev"></div><div class="b rev"></div></div>';
+      else if (x === 'bar') h += '<div class="bar"><i></i><i></i></div>';
+      else if (x.indexOf('gap') === 0) h += '<div class="'+x+'"></div>';
+      else h += '<div class="b '+x+'"></div>';
+    });
+    return '<div class="ph'+(green?' green':'')+'">'+h+'</div>';
+  }
+  function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
+
+  var grid = document.getElementById('grid');
+  grid.innerHTML = C.map(function(c,i){
+    return '<div class="card" data-k="'+c.k+'"><div class="top"><span class="t">'+c.t+'</span><span class="tag">'+c.k+'</span></div>'+
+      '<div class="vs"><div class="side"><span class="cap">Vorher</span>'+screen(c.a)+'</div><span class="arrow">→</span><div class="side after"><span class="cap">Nachher</span>'+screen(c.b)+'</div></div>'+
+      '<div class="cmd"><span id="c'+i+'">'+esc(c.cmd)+'</span><button class="copy" type="button" data-i="'+i+'">KOPIEREN</button></div>'+
+      '<p class="why">'+c.why+'</p></div>';
+  }).join('');
+
+  var chips = document.getElementById('chips');
+  chips.innerHTML = CATS.map(function(c,i){ return '<button type="button" class="chip'+(i?'':' on')+'" data-k="'+c[0]+'">'+c[1]+'</button>'; }).join('');
+  chips.addEventListener('click', function(e){
+    var b = e.target.closest('.chip'); if (!b) return;
+    chips.querySelectorAll('.chip').forEach(function(x){ x.classList.toggle('on', x === b); });
+    grid.querySelectorAll('.card').forEach(function(card){ card.hidden = !(b.dataset.k === 'alle' || card.dataset.k === b.dataset.k); });
+  });
+
+  grid.addEventListener('click', function(e){
+    var btn = e.target.closest('.copy'); if (!btn) return;
+    var el = document.getElementById('c'+btn.dataset.i), text = C[+btn.dataset.i].cmd;
+    function ok(){ btn.textContent = 'KOPIERT ✓'; setTimeout(function(){ btn.textContent = 'KOPIEREN'; }, 1500); }
+    function fb(){ var r = document.createRange(); r.selectNodeContents(el); var s = getSelection(); s.removeAllRanges(); s.addRange(r); try { document.execCommand('copy'); ok(); } catch(x){ btn.textContent = 'MARKIERT'; } }
+    try { navigator.clipboard.writeText(text).then(ok, fb); } catch(x){ fb(); }
+  });
+</script>
+</body>
+</html>

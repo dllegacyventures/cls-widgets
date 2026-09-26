@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CLS · Der Drei-Design-Trick</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  :root { --bg:#080706; --panel:#0e0d0b; --ink:#f2efe8; --muted:rgba(242,239,232,.6); --faint:rgba(242,239,232,.32); --line:rgba(242,239,232,.14); --am:#ff9f1c; }
+  body { background:var(--bg); color:var(--ink); font-family:'Archivo',sans-serif; line-height:1.6; padding:36px 18px 60px; }
+  .wrap { max-width:860px; margin:0 auto; }
+  .kicker { font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.3em; color:var(--am); text-transform:uppercase; margin-bottom:14px; }
+  h1 { font-family:'Anton',sans-serif; font-weight:400; text-transform:uppercase; font-size:clamp(30px,6vw,52px); line-height:1.02; margin-bottom:14px; }
+  h1 .am, h2 .am { color:var(--am); }
+  h2 { font-family:'Anton',sans-serif; font-weight:400; text-transform:uppercase; font-size:24px; margin:38px 0 16px; }
+  .lead { color:var(--muted); font-size:17px; max-width:660px; margin-bottom:28px; }
+  .lead b { color:var(--ink); }
+
+  .trio { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+  @media (max-width:640px){ .trio { grid-template-columns:1fr; } }
+  .opt { border:1px solid var(--line); background:var(--panel); padding:18px 14px 16px; display:flex; flex-direction:column; align-items:center; gap:12px; text-align:center; }
+  .opt .lbl { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--am); }
+  .opt .t { font-weight:700; font-size:16px; }
+  .opt .d { color:var(--muted); font-size:13.5px; }
+
+  .phone { width:132px; height:240px; border:2px solid rgba(242,239,232,.35); border-radius:18px; padding:14px 7px 9px; position:relative; background:#050505; }
+  .phone::before { content:''; position:absolute; top:5px; left:50%; transform:translateX(-50%); width:34px; height:4px; border-radius:3px; background:rgba(242,239,232,.25); }
+  .scr { height:100%; border-radius:6px; overflow:hidden; display:flex; flex-direction:column; text-align:left; }
+  /* A · schlicht */
+  .a { background:#f5f1ea; color:#1b1a18; padding:10px 8px; gap:7px; }
+  .a .nm { font-family:Georgia,serif; font-size:15px; line-height:1.05; }
+  .a .ln { height:1px; background:#1b1a18; opacity:.25; }
+  .a .tx { height:4px; background:#1b1a18; opacity:.18; border-radius:2px; }
+  .a .bt { margin-top:auto; border:1px solid #1b1a18; font-size:7px; font-family:'JetBrains Mono',monospace; text-align:center; padding:4px; letter-spacing:.1em; }
+  /* B · regional */
+  .b { background:#6b3a22; color:#fbe9d2; }
+  .b .hill { height:78px; background:linear-gradient(#e9a45c 0 38%, transparent 38%), radial-gradient(ellipse 70% 60% at 30% 100%, #8a5a2b 60%, transparent 61%), radial-gradient(ellipse 80% 55% at 85% 100%, #a8743a 60%, transparent 61%), #e9a45c; position:relative; }
+  .b .sun { position:absolute; right:14px; top:10px; width:16px; height:16px; border-radius:50%; background:#fff3c4; }
+  .b .in { padding:8px; display:flex; flex-direction:column; gap:6px; flex:1; }
+  .b .nm { font-family:'Anton',sans-serif; font-size:14px; letter-spacing:.04em; text-transform:uppercase; }
+  .b .tile { height:12px; background:repeating-linear-gradient(90deg,#c9683a 0 8px,#e8b27a 8px 16px); border-radius:2px; opacity:.8; }
+  .b .tx { height:4px; background:#fbe9d2; opacity:.35; border-radius:2px; }
+  .b .bt { margin-top:auto; background:#fbe9d2; color:#6b3a22; font-size:7px; font-family:'JetBrains Mono',monospace; text-align:center; padding:4px; font-weight:700; }
+  /* C · Angebot */
+  .c { background:#131110; color:#f2efe8; padding:8px; gap:6px; }
+  .c .nm { font-weight:700; font-size:11px; }
+  .c .grid { display:grid; grid-template-columns:1fr 1fr; gap:5px; }
+  .c .dish { border-radius:4px; height:44px; position:relative; overflow:hidden; }
+  .c .dish::after { content:attr(data-n); position:absolute; left:3px; bottom:2px; font-size:6.5px; font-family:'JetBrains Mono',monospace; color:#fff; text-shadow:0 1px 2px #000; }
+  .c .d1 { background:radial-gradient(circle at 50% 50%, #e8c27a 0 30%, #c0392b 31% 45%, #f5efe3 46% 60%, #2a2521 61%); }
+  .c .d2 { background:radial-gradient(circle at 50% 50%, #f1d9a0 0 20%, #d9a441 21% 40%, #f5efe3 41% 58%, #2a2521 59%); }
+  .c .d3 { background:radial-gradient(circle at 50% 50%, #7fae4e 0 22%, #d9534f 23% 32%, #f5efe3 33% 56%, #2a2521 57%); }
+  .c .d4 { background:radial-gradient(circle at 50% 50%, #5a3a24 0 26%, #f5efe3 27% 56%, #2a2521 57%); }
+  .c .bt { margin-top:auto; background:var(--am); color:#000; font-size:7px; font-family:'JetBrains Mono',monospace; text-align:center; padding:4px; font-weight:700; }
+
+  .builder { border:1px solid var(--line); background:var(--panel); padding:22px; }
+  .builder .grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media (max-width:640px){ .builder .grid { grid-template-columns:1fr; } }
+  .f label { display:block; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+  .f input, .f select { width:100%; background:#050505; border:1px solid var(--line); color:var(--ink); font-family:'Archivo',sans-serif; font-size:15px; padding:11px 12px; outline:none; }
+  .f input:focus, .f select:focus { border-color:var(--am); }
+  .f.full { grid-column:1 / -1; }
+
+  .pr { border:1px solid var(--line); background:#050505; margin-top:14px; }
+  .pr .hd { display:flex; justify-content:space-between; align-items:center; gap:10px; padding:10px 14px; border-bottom:1px solid var(--line); font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--am); flex-wrap:wrap; }
+  .pr .hd span.w { color:var(--faint); letter-spacing:.08em; }
+  .pr pre { font-family:'JetBrains Mono',monospace; font-size:12.5px; line-height:1.7; color:var(--ink); padding:14px; white-space:pre-wrap; }
+  .pr button { display:block; width:100%; border:0; border-top:1px solid var(--line); background:none; color:var(--am); font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.1em; padding:11px; cursor:pointer; }
+  .pr button:hover { background:rgba(255,159,28,.1); }
+  .note { border-left:3px solid var(--am); padding:10px 14px; background:rgba(255,159,28,.05); color:var(--muted); font-size:14.5px; margin-top:18px; }
+  .note b { color:var(--ink); }
+  .steps { list-style:none; counter-reset:s; }
+  .steps li { counter-increment:s; border:1px solid var(--line); background:var(--panel); padding:12px 16px 12px 52px; margin-bottom:8px; position:relative; color:var(--muted); font-size:15px; }
+  .steps li::before { content:'0' counter(s); position:absolute; left:16px; top:12px; font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--am); }
+  .steps li b { color:var(--ink); }
+  .footer { margin-top:40px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.24em; color:var(--faint); text-transform:uppercase; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">CLS · Trick · Umkehr-Schalter</div>
+  <h1>Der <span class="am">Drei-Design</span>-Trick.</h1>
+  <p class="lead">Lass für jeden Betrieb <b>drei Richtungen</b> bauen statt einer. Du suchst dir die beste aus und hast zwei Alternativen in der Hinterhand. Kostet dich drei Prompts, und der Inhaber sieht: Hier hat sich jemand Gedanken über <b>seinen</b> Betrieb gemacht.</p>
+
+  <div class="trio">
+    <div class="opt">
+      <div class="lbl">A · Schlicht</div>
+      <div class="phone" aria-hidden="true"><div class="scr a"><div class="nm">Trattoria<br>Sole</div><div class="ln"></div><div class="tx"></div><div class="tx" style="width:80%"></div><div class="tx" style="width:60%"></div><div class="ln"></div><div class="tx" style="width:70%"></div><div class="tx" style="width:50%"></div><div class="bt">TISCH RESERVIEREN</div></div></div>
+      <div class="t">Klassisch, ruhig</div><div class="d">Viel Weißraum, klare Schrift, eine Akzentfarbe. Passt fast immer.</div>
+    </div>
+    <div class="opt">
+      <div class="lbl">B · Regional</div>
+      <div class="phone" aria-hidden="true"><div class="scr b"><div class="hill"><div class="sun"></div></div><div class="in"><div class="nm">Trattoria Sole</div><div class="tile"></div><div class="tx"></div><div class="tx" style="width:70%"></div><div class="bt">TISCH RESERVIEREN</div></div></div></div>
+      <div class="t">Woher sie kommen</div><div class="d">Farben und Bilder aus der Herkunft oder dem Ort des Betriebs.</div>
+    </div>
+    <div class="opt">
+      <div class="lbl">C · Angebot</div>
+      <div class="phone" aria-hidden="true"><div class="scr c"><div class="nm">Trattoria Sole</div><div class="grid"><div class="dish d1" data-n="Pizza"></div><div class="dish d2" data-n="Pasta"></div><div class="dish d3" data-n="Antipasti"></div><div class="dish d4" data-n="Dolci"></div></div><div class="bt">TISCH RESERVIEREN</div></div></div>
+      <div class="t">Das Angebot vorne</div><div class="d">Gerichte oder Leistungen als große Bilder. Man sieht sofort, was es gibt.</div>
+    </div>
+  </div>
+
+  <h2>Dein Drei-Prompt-<span class="am">Generator</span></h2>
+  <div class="builder">
+    <div class="grid">
+      <div class="f"><label for="br">Branche</label>
+        <select id="br" onchange="build()">
+          <option value="rest">Restaurant / Café</option>
+          <option value="hand">Handwerk</option>
+          <option value="salon">Salon / Praxis / Studio</option>
+          <option value="werk">Kfz-Werkstatt</option>
+        </select></div>
+      <div class="f"><label for="nm">Name des Betriebs</label><input id="nm" placeholder="Trattoria Sole" oninput="build()"></div>
+      <div class="f"><label for="st">Stadt</label><input id="st" placeholder="Esslingen" oninput="build()"></div>
+      <div class="f"><label for="art">Was genau? (Art)</label><input id="art" placeholder="Italian restaurant" oninput="build()"></div>
+      <div class="f"><label for="rg">Region / Herkunft</label><input id="rg" placeholder="Tuscany" oninput="build()"></div>
+      <div class="f"><label for="an">Angebot (3–4 Dinge)</label><input id="an" placeholder="pizza, fresh pasta, antipasti, dolci" oninput="build()"></div>
+    </div>
+    <div class="note" style="margin-top:14px">Felder auf <b>Englisch</b> ausfüllen, Stitch versteht es so am besten. Button-Texte bleiben deutsch, die sieht ja der Kunde.</div>
+    <div id="out"></div>
+  </div>
+
+  <h2>So nutzt du <span class="am">die drei</span></h2>
+  <ol class="steps">
+    <li>Erst den <b>Steckbrief</b> des Betriebs in Claude erstellen (Stopp-Regeln an). Die Felder oben füllst du daraus.</li>
+    <li>Jeden Prompt einzeln in <b>Stitch → Generate</b>. Ein Prompt, eine Seite.</li>
+    <li><b>Handy-Ansicht</b> aller drei vergleichen: Welche würdest du als Kunde öffnen?</li>
+    <li>Den <b>Favoriten</b> fertig machen: echte Texte aus dem Steckbrief, Telefonnummer antippbar.</li>
+  </ol>
+  <div class="note"><b>In der Übergabe:</b> Schick den Favoriten als Link. Die anderen zwei hängst du ans Ende: „Falls euch das eher liegt, hab ich noch zwei andere Richtungen gebaut.“ So hat er eine Wahl zwischen deinen Entwürfen, nicht zwischen Ja und Nein.</div>
+
+  <div class="footer">CLS — Clone Looping System</div>
+</div>
+<script>
+  var B = {
+    rest:{ type:'restaurant', btn:'Tisch reservieren', sec:"hero with photo and \"Tisch reservieren\" button, today's highlights, menu preview, reviews, opening hours, location, contact" },
+    hand:{ type:'local trade business', btn:'Kostenloses Angebot', sec:'hero with photo and "Kostenloses Angebot" button, 4 service cards, customer reviews with stars, about the team with photo, service area map, contact with tap-to-call' },
+    salon:{ type:'salon / practice', btn:'Termin anfragen', sec:'hero with "Termin anfragen" button, services list with prices as placeholders, team, reviews, opening hours, location, contact' },
+    werk:{ type:'car repair workshop', btn:'Termin anfragen', sec:'hero with photo and "Termin anfragen" button, service cards, customer reviews with stars, about the team, opening hours, location, contact with tap-to-call' }
+  };
+  function v(id, fb){ var x=document.getElementById(id).value.trim(); return x||fb; }
+  function words(s){ return s.trim().split(/\s+/).length; }
+  function build(){
+    var b = B[document.getElementById('br').value];
+    var nm=v('nm','[Name]'), st=v('st','[Stadt]'), art=v('art', b.type), rg=v('rg','[region/origin]'), an=v('an','[main offers]');
+    var head = 'Mobile-first one-page website for "'+nm+'", a '+art+' in '+st+'. Sections: '+b.sec+'. ';
+    var tail = ' No stock clichés, large type, lots of space. Do not invent prices, reviews or facts — use placeholders.';
+    var P = [
+      ['A · Schlicht', head+'Style: classic and calm — dark text on warm off-white, one accent color, elegant serif headings, generous white space, minimal decoration.'+tail],
+      ['B · Regional', head+'Style inspired by '+rg+': colors, textures and imagery drawn from '+rg+' (landscape, materials, typical patterns), warm and authentic, never kitsch.'+tail],
+      ['C · Angebot', head+'Style: offer-led — '+an+' shown as large photo cards with short names right below the hero, concrete and appetizing, the offer visible on the first screen.'+tail]
+    ];
+    var h='';
+    P.forEach(function(p,i){
+      var w=words(p[1]);
+      h+='<div class="pr"><div class="hd"><span>'+p[0]+'</span><span class="w">'+w+' Wörter'+(w>120?' · kürzen!':'')+'</span></div><pre id="p'+i+'"></pre><button onclick="cp('+i+',this)">PROMPT '+p[0].charAt(0)+' KOPIEREN</button></div>';
+    });
+    document.getElementById('out').innerHTML=h;
+    P.forEach(function(p,i){ document.getElementById('p'+i).textContent=p[1]; });
+  }
+  function cp(i,btn){
+    var pre=document.getElementById('p'+i), old=btn.textContent;
+    function ok(){ btn.textContent='KOPIERT ✓'; setTimeout(function(){btn.textContent=old},1500); }
+    function fb(){ var r=document.createRange(); r.selectNodeContents(pre); var s=getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent='MARKIERT — JETZT KOPIEREN'; setTimeout(function(){btn.textContent=old},2500); }
+    try { navigator.clipboard.writeText(pre.textContent).then(ok, fb); } catch(e){ fb(); }
+  }
+  build();
+</script>
+</body>
+</html>

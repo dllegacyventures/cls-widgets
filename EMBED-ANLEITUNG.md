@@ -1,6 +1,6 @@
 # CLS Skool-Widgets — Hosting & Embed-Anleitung
 
-7 interaktive Lektions-Widgets + Übersichtsseite. Alle Dateien sind **self-contained** (nur Google Fonts als externe Abhängigkeit), responsiv und im CLS-Brand (Schwarz/Amber).
+16 interaktive Lektions-Widgets + Übersichtsseite. Alle Dateien sind **self-contained** (nur Google Fonts als externe Abhängigkeit), responsiv und im CLS-Brand (Schwarz/Amber).
 
 ## 1. Hosten (einmalig, ~5 Minuten)
 
@@ -51,6 +51,15 @@ Empfohlene iframe-Höhen: 01 → 1100 · 02 → 1400 · 03 → 1500 · 04 → 12
 | 05 | 05-preis-rechner.html | Monetarisierung | Einkommens-Rechner mit Slidern |
 | 06 | 06-outreach-cadence.html | Outreach: Der Fahrplan | Timeline mit kopierbaren Vorlagen |
 | 07 | 07-einwand-trainer.html | Verkauf: Einwände | 8 Flip-Cards |
+| 08 | 08-ziel-board.html | 10 · Setups & Tricks → Setup | Ziel-Board-Generator (3/6/12 Monate, Rechnung, Zeitstrahl) |
+| 09 | 09-der-loop.html | 10 · Setups & Tricks → Bildlich erklärt | Klickbarer Loop, 8 Stationen mit Prompts |
+| 10 | 10-arbeitsweg-methode.html | 10 · Setups & Tricks → Setup | Maps → Link → Notiz, gezeichnete Handy-Screens |
+| 11 | 11-setup-handy.html | 10 · Setups & Tricks → Setup | Handy-Setup-Checkliste (Claude + Stitch) |
+| 12 | 12-website-check.html | 10 · Setups & Tricks → Tricks | 10-Punkte-Check + Übergabe-Satz |
+| 13 | 13-drei-designs.html | 10 · Setups & Tricks → Tricks | Drei-Design-Trick + Stitch-Prompt-Generator |
+| 14 | 14-stitch-befehle.html | 10 · Setups & Tricks → Tricks | Stitch-Spickzettel mit Vorher/Nachher |
+| 15 | 15-pflege-rechner.html | 10 · Setups & Tricks → Bildlich erklärt | Doppel-Schalter: einmalig + monatlich als Diagramm |
+| 16 | 16-landkarte.html | 10 · Setups & Tricks → Bildlich erklärt | Die 9 Schalter als Landkarte mit Fortschritt |
 
 `index.html` = Übersicht aller Widgets (z. B. als „Ressourcen"-Lektion ganz oben im Classroom verlinken).
 
