@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CLS · Dein Start</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  :root { --bg:#080706; --panel:#0e0d0b; --ink:#f2efe8; --muted:rgba(242,239,232,.62); --faint:rgba(242,239,232,.34); --line:rgba(242,239,232,.14); --am:#ff9f1c; --clay:#D97757; }
+  body { background:var(--bg); color:var(--ink); font-family:'Archivo',sans-serif; line-height:1.6; padding:36px 16px 70px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  .kicker { font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.3em; color:var(--am); text-transform:uppercase; margin-bottom:14px; }
+  .kicker b { color:var(--clay); font-weight:500; }
+  h1 { font-family:'Anton',sans-serif; font-weight:400; text-transform:uppercase; font-size:clamp(36px,7.5vw,70px); line-height:.98; margin-bottom:16px; }
+  h1 .am, h2 .am { color:var(--am); }
+  h2 { font-family:'Anton',sans-serif; font-weight:400; text-transform:uppercase; font-size:clamp(22px,3.4vw,30px); margin:58px 0 8px; }
+  .sub { color:var(--muted); margin-bottom:18px; max-width:720px; }
+  .lead { color:var(--muted); font-size:18px; max-width:720px; }
+  .lead b { color:var(--ink); }
+  .nav { display:flex; gap:8px; flex-wrap:wrap; margin-top:26px; }
+  .nav a { font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); border:1px solid var(--line); padding:8px 12px; text-decoration:none; }
+  .nav a:hover { color:var(--am); border-color:var(--am); }
+
+  /* 1 · Ziel */
+  .ziel { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:20px; }
+  @media (max-width:860px){ .ziel { grid-template-columns:1fr; } }
+  .panel { border:1px solid var(--line); background:var(--panel); padding:20px; display:flex; flex-direction:column; gap:14px; }
+  .f label { display:block; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+  .f input, .f select, .f textarea { width:100%; background:#050505; border:1px solid var(--line); color:var(--ink); font-family:'Archivo',sans-serif; font-size:15px; padding:10px 12px; outline:none; }
+  .f textarea { min-height:64px; resize:vertical; }
+  .f input:focus, .f select:focus, .f textarea:focus { border-color:var(--am); }
+  .row2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .hint { font-size:13px; color:var(--faint); }
+  .karte { border:1px solid var(--am); background:linear-gradient(135deg,rgba(255,159,28,.15),rgba(217,119,87,.05) 60%,transparent); padding:24px 22px; display:flex; flex-direction:column; gap:14px; }
+  .karte .eb { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--faint); }
+  .karte .gross { font-family:'Anton',sans-serif; text-transform:uppercase; font-size:clamp(24px,3.6vw,36px); line-height:1.05; }
+  .karte .gross span { color:var(--am); }
+  .karte .zeile { border-top:1px solid var(--line); padding-top:10px; font-size:15px; color:var(--muted); }
+  .karte .zeile b { color:var(--ink); font-weight:600; }
+  .smart { display:flex; gap:6px; flex-wrap:wrap; }
+  .smart span { font-family:'JetBrains Mono',monospace; font-size:11px; padding:4px 8px; border:1px solid var(--line); color:var(--faint); }
+  .smart span.ok { border-color:var(--am); color:var(--am); }
+
+  /* 2 · Landkarte */
+  .filter { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
+  .filter button { font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.08em; padding:8px 12px; border:1px solid var(--line); background:transparent; color:var(--muted); cursor:pointer; }
+  .filter button.on, .filter button:hover { border-color:var(--am); color:var(--am); }
+  .grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
+  @media (max-width:980px){ .grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  @media (max-width:520px){ .grid { grid-template-columns:1fr; } }
+  .kachel { border:1px solid var(--line); background:var(--panel); padding:18px 16px; cursor:pointer; text-align:left; color:var(--ink); font-family:inherit; display:flex; flex-direction:column; gap:8px; transition:border-color .2s, transform .2s; }
+  .kachel:hover { border-color:rgba(255,159,28,.6); transform:translateY(-2px); }
+  .kachel.on { border-color:var(--am); background:rgba(255,159,28,.08); }
+  .kachel.aus { opacity:.28; }
+  .kachel .ic { font-size:26px; }
+  .kachel b { font-size:17px; line-height:1.2; }
+  .kachel small { color:var(--muted); font-size:13.5px; }
+  .tags { display:flex; gap:6px; flex-wrap:wrap; margin-top:auto; }
+  .tags span { font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.06em; padding:3px 7px; border:1px solid var(--line); color:var(--faint); }
+
+  .detail { margin-top:16px; border:1px solid var(--am); background:var(--panel); padding:24px 22px; display:none; }
+  .detail.show { display:block; }
+  .detail h3 { font-family:'Anton',sans-serif; font-weight:400; text-transform:uppercase; font-size:clamp(24px,3.6vw,34px); line-height:1.05; margin-bottom:6px; }
+  .detail .was { color:var(--muted); margin-bottom:18px; max-width:760px; }
+  .dgrid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+  @media (max-width:860px){ .dgrid { grid-template-columns:1fr; } }
+  .box { border:1px solid var(--line); padding:14px; }
+  .box .eb { font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.2em; text-transform:uppercase; color:var(--am); margin-bottom:8px; }
+  .box ul { list-style:none; display:flex; flex-direction:column; gap:6px; }
+  .box li { font-size:14.5px; padding-left:16px; position:relative; color:var(--ink); }
+  .box li::before { content:'›'; position:absolute; left:0; color:var(--am); }
+  .zug { margin-top:12px; border-left:2px solid var(--am); padding:4px 0 4px 14px; }
+  .zug b { color:var(--am); font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.2em; text-transform:uppercase; display:block; }
+  .esatz { margin-top:16px; display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  .esatz code { font-family:'JetBrains Mono',monospace; font-size:14px; background:#050505; border:1px solid var(--line); padding:10px 12px; flex:1; min-width:240px; }
+  .btn { font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.12em; text-transform:uppercase; padding:11px 16px; cursor:pointer; border:1px solid var(--am); background:var(--am); color:#080706; font-weight:700; }
+  .btn.ok { background:transparent; color:var(--am); }
+
+  /* 3 · Entscheidung */
+  .quiz { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+  @media (max-width:760px){ .quiz { grid-template-columns:1fr; } }
+  .frage { border:1px solid var(--line); background:var(--panel); padding:16px; }
+  .frage .q { font-weight:600; margin-bottom:10px; }
+  .frage .opts { display:flex; gap:8px; flex-wrap:wrap; }
+  .frage .opts button { font-family:'Archivo',sans-serif; font-size:14px; padding:7px 11px; border:1px solid var(--line); background:transparent; color:var(--muted); cursor:pointer; }
+  .frage .opts button.on { border-color:var(--am); color:var(--am); }
+  .empf { margin-top:14px; border:1px solid var(--line); padding:18px; min-height:70px; color:var(--muted); }
+  .empf b { color:var(--am); }
+
+  /* 4 · Regeln */
+  .regeln { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+  @media (max-width:820px){ .regeln { grid-template-columns:1fr; } }
+  .regel { border-left:2px solid var(--am); padding:4px 0 4px 14px; }
+  .regel b { display:block; }
+  .regel span { color:var(--muted); font-size:14.5px; }
+  .foot { margin-top:48px; color:var(--faint); font-size:13px; border-top:1px solid var(--line); padding-top:16px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">CLS · <b>Premium</b> · Gold &amp; Platin</div>
+  <h1>Dein <span class="am">Start.</span></h1>
+  <p class="lead">Mit KI geht fast jede Richtung — genau deshalb ist die erste Entscheidung die wichtigste. Auf dieser Seite legst du fest, <b>was</b> du erreichen willst, <b>womit</b> du es erreichst und <b>woran</b> du merkst, dass du auf Kurs bist. Am Ende sagst du es Esis.</p>
+  <div class="nav"><a href="#ziel">1 · Dein Ziel</a><a href="#wege">2 · Die Wege</a><a href="#wahl">3 · Deine Wahl</a><a href="#regeln">4 · Die Regeln</a></div>
+
+  <h2 id="ziel">1 · Dein <span class="am">Ziel</span></h2>
+  <p class="sub">Ein Ziel, das du nicht in einen Satz bekommst, ist noch ein Wunsch. Füll die Felder aus — rechts entsteht deine Zielkarte. Mach einen Screenshot und leg sie als Sperrbildschirm fest.</p>
+  <div class="ziel">
+    <div class="panel">
+      <div class="f"><label>Was willst du erreichen?</label><input id="zWas" placeholder="z. B. meinen ersten zahlenden Kunden gewinnen"></div>
+      <div class="f"><label>Womit — welcher Weg?</label><input id="zWomit" placeholder="z. B. Websites für Friseure in meiner Stadt"></div>
+      <div class="row2">
+        <div class="f"><label>Bis wann?</label><input id="zBis" type="date"></div>
+        <div class="f"><label>Stunden pro Woche</label><input id="zStd" type="number" min="1" max="80" placeholder="z. B. 8"></div>
+      </div>
+      <div class="f"><label>Woran merkst du es? (messbar)</label><input id="zMess" placeholder="z. B. 1 unterschriebenes Angebot, 20 angesprochene Betriebe"></div>
+      <div class="f"><label>Warum ist dir das wichtig?</label><textarea id="zWarum" placeholder="Deine Worte. Das liest du, wenn es zäh wird."></textarea></div>
+      <div class="hint">Wird nur in deinem Browser gespeichert.</div>
+    </div>
+    <div class="karte">
+      <div class="eb">Meine Zielkarte</div>
+      <div class="gross" id="kWas">Ich will <span>…</span></div>
+      <div class="zeile"><b>Womit:</b> <span id="kWomit">—</span></div>
+      <div class="zeile"><b>Bis:</b> <span id="kBis">—</span> · <b>Zeit:</b> <span id="kStd">—</span></div>
+      <div class="zeile"><b>Messbar:</b> <span id="kMess">—</span></div>
+      <div class="zeile"><b>Warum:</b> <span id="kWarum">—</span></div>
+      <div class="smart" id="smart"><span data-k="was">Klar</span><span data-k="womit">Weg</span><span data-k="bis">Datum</span><span data-k="std">Zeit</span><span data-k="mess">Messbar</span><span data-k="warum">Warum</span></div>
+    </div>
+  </div>
+
+  <h2 id="wege">2 · Die <span class="am">Wege</span></h2>
+  <p class="sub">Acht Richtungen, in denen KI-Klone heute echte Arbeit übernehmen. Tipp eine an: was der Klon macht, was du machst, womit, und dein erster Schritt. Das sind Beispiele — keine Grenzen.</p>
+  <div class="filter" id="filter">
+    <button data-f="alle" class="on">Alle</button>
+    <button data-f="wenig-geld">Wenig Budget</button>
+    <button data-f="wenig-zeit">Wenig Zeit</button>
+    <button data-f="ohne-kamera">Ohne Kamera</button>
+    <button data-f="lokal">Vor Ort</button>
+    <button data-f="online">Komplett online</button>
+  </div>
+  <div class="grid" id="grid"></div>
+  <div class="detail" id="detail"></div>
+
+  <h2 id="wahl">3 · Deine <span class="am">Wahl</span></h2>
+  <p class="sub">Vier ehrliche Fragen. Danach siehst du, welche zwei Wege am besten zu deiner Lage passen — nicht, welcher am lautesten klingt.</p>
+  <div class="quiz" id="quiz"></div>
+  <div class="empf" id="empf">Beantworte die Fragen, dann erscheint hier deine Empfehlung.</div>
+
+  <h2 id="regeln">4 · Die <span class="am">Regeln</span> für deinen Start</h2>
+  <div class="regeln">
+    <div class="regel"><b>Ein Weg. 30 Tage.</b><span>Nicht drei Dinge halb. Du wechselst erst, wenn du einen Weg einmal komplett durchgezogen hast.</span></div>
+    <div class="regel"><b>Du baust, bevor du fragst.</b><span>Erst ein Ergebnis zeigen — eine Seite, ein Ablauf, ein Post — dann darüber reden.</span></div>
+    <div class="regel"><b>Der Klon arbeitet, du entscheidest.</b><span>Lass die KI die Arbeit machen. Deine Aufgabe ist Auswahl, Gespräch und Verkauf.</span></div>
+    <div class="regel"><b>Zeitfenster vor Motivation.</b><span>Trag deine Stunden fest in den Kalender. Motivation kommt nach dem ersten Ergebnis, nicht davor.</span></div>
+    <div class="regel"><b>Messen, nicht fühlen.</b><span>Zähl jede Woche: angesprochen, gebaut, gezeigt, abgeschlossen. Die Zahl sagt dir, wo es hakt.</span></div>
+    <div class="regel"><b>Sag es Esis.</b><span>Wenn du dich entschieden hast: „Esis, ich bin bereit …“ in deine Gruppe — und du bekommst deinen Fahrplan.</span></div>
+  </div>
+
+  <div class="foot">CLS · Clone Looping System · Premium-Bereich für Gold &amp; Platin. Alle Kosten und Zeiten sind Richtwerte, keine Versprechen — das Ergebnis hängt an deiner Umsetzung.</div>
+</div>
+<script>
+const WEGE = [
+  { id:"maps", ic:"📍", name:"Lokale Betriebe über Google Maps", kurz:"Websites, Buchung, Bewertungen für Betriebe in deiner Stadt.", tags:["wenig-geld","ohne-kamera","lokal"],
+    was:"Du findest auf Google Maps Betriebe mit schwacher oder fehlender Website — Friseure, Handwerker, Restaurants — und verkaufst ihnen eine fertige Lösung, die dein Klon gebaut hat.",
+    klon:["Betriebe auf Maps sichten und bewerten","Drei Designs entwerfen","Fertige Seite bauen und prüfen","Angebot und Nachfass-Nachricht schreiben"],
+    du:["Betriebe auswählen","Vorbeigehen oder anrufen","Seite zeigen, Preis nennen","Pflege monatlich anbieten"],
+    womit:["Claude","Stitch","Google Maps","Hosting"], zug:"Auf deinem nächsten Weg zehn Betriebe notieren, deren Website du besser machen würdest.", kurse:"10 · Setups & Tricks · 01 · Prompt-Bibliothek · 03 · Tricks & Frameworks", satz:"Websites für lokale Unternehmen über Google Maps zu bauen" },
+  { id:"airbnb", ic:"🏠", name:"Airbnb & Ferienwohnungen", kurz:"Gäste-Kommunikation, Inserate und Abläufe für Gastgeber.", tags:["ohne-kamera","online"],
+    was:"Gastgeber ertrinken in Nachrichten, Check-ins und Bewertungen. Dein Klon schreibt Inserate, beantwortet Gäste nach festen Regeln und hält Abläufe zusammen — du verkaufst das als Service an Gastgeber. Wer selbst vermieten will, nutzt dieselben Klone für die eigene Wohnung.",
+    klon:["Inserat-Texte und Fotos-Briefing","Gäste-Antworten nach Vorlage","Check-in-Anleitung und Hausbuch","Bewertungen auswerten"],
+    du:["Gastgeber finden und überzeugen","Regeln mit dem Gastgeber festlegen","Ergebnisse wöchentlich prüfen"],
+    womit:["Claude","Vorlagen & Automationen","Plattform-Tools der Gastgeber"], zug:"Fünf Inserate in deiner Region lesen und je drei Schwächen notieren.", kurse:"01 · Prompt-Bibliothek · 08 · Agenten-Bauplan · 03 · Tricks & Frameworks", satz:"Airbnb-Gastgebern mit KI-Klonen Arbeit abzunehmen" },
+  { id:"shop", ic:"📦", name:"Onlineshop & Dropshipping", kurz:"Produktrecherche, Shop, Texte und Anzeigen mit KI.", tags:["online","ohne-kamera"],
+    was:"Dein Klon recherchiert Produkte und Nischen, baut Produktseiten, schreibt Texte und Anzeigen-Varianten. Du entscheidest, was getestet wird, und hältst die Zahlen im Blick. Achtung: Hier brauchst du meist Werbebudget zum Testen.",
+    klon:["Nischen- und Produktrecherche","Produktseiten und Texte","Anzeigen-Varianten","Kundenservice-Vorlagen"],
+    du:["Produkt auswählen","Lieferanten prüfen","Testbudget festlegen","Zahlen auswerten"],
+    womit:["Claude","Shop-System","Anzeigen-Plattform","Ultron für die Zahlen"], zug:"Drei Produktideen mit Deep Research prüfen lassen und eine davon begründet auswählen.", kurse:"01 · Prompt-Bibliothek · 05 · Ultron Build-Guide · 03 · Tricks & Frameworks", satz:"einen Onlineshop mit Dropshipping aufzubauen" },
+  { id:"content", ic:"🎬", name:"Content für andere", kurz:"Posts, Skripte, Shorts für Betriebe und Selbstständige.", tags:["wenig-geld","online"],
+    was:"Viele Betriebe wissen, dass sie posten müssten, und tun es nicht. Dein Klon schreibt Skripte, Posts und Captions im Ton des Kunden und plant den Monat. Du lieferst und hältst den Rhythmus.",
+    klon:["Content-Plan für den Monat","Skripte und Captions in der Kundenstimme","1 Idee → 10 Posts","Hooks testen"],
+    du:["Kunden gewinnen","Material beim Kunden abholen","Freigabe und Veröffentlichung"],
+    womit:["Claude","Content-Engine-Prompt","Schnitt-App","Planungs-Tool"], zug:"Für einen Betrieb aus deiner Stadt eine Woche Posts bauen — als Probe zum Zeigen.", kurse:"01 · Prompt-Bibliothek · 02 · Skills & Tools · 06 · Video-Skripte · 03 · Tricks & Frameworks", satz:"Content für lokale Betriebe mit KI zu produzieren" },
+  { id:"auto", ic:"⚙️", name:"Automationen für Firmen", kurz:"Wiederkehrende Abläufe übernehmen: Mails, Angebote, Termine.", tags:["ohne-kamera","lokal","online"],
+    was:"In jeder Firma gibt es Arbeit, die jeden Tag gleich ist — Anfragen beantworten, Angebote schreiben, Termine nachhalten. Du baust einen Klon, der genau das übernimmt, und verkaufst die gesparte Zeit.",
+    klon:["Anfragen sortieren und beantworten","Angebote aus Vorlagen","Termin-Erinnerungen","Wochenbericht"],
+    du:["Den teuersten Ablauf finden","Mit dem Inhaber Regeln festlegen","Einführen und betreuen"],
+    womit:["Claude","Agenten-Bauplan","Service-Connectors (MCP)","Kalender/CRM"], zug:"Einen Betrieb fragen: „Welche Aufgabe nervt euch jeden Tag?“ — und die Antwort aufschreiben.", kurse:"08 · Agenten-Bauplan · 02 · Skills & Tools · 04 · Jarvis Build-Guide", satz:"Abläufe in Unternehmen mit KI-Klonen zu automatisieren" },
+  { id:"agentur", ic:"🚀", name:"Eigene KI-Agentur", kurz:"Mehrere Leistungen, ein Auftritt, fester Rhythmus.", tags:["online","lokal"],
+    was:"Du bündelst Websites, Content und Automationen unter einer eigenen Marke — mit Personal Brand, Outreach-Rhythmus und Angebot. Das Agentur-Protokoll gibt dir 31 Tage Takt vor.",
+    klon:["Outreach-Texte und Follow-ups","Audits für Interessenten","Angebote und Pricing-Varianten","Posts für deine Marke"],
+    du:["Täglich fünf Leute ansprechen","Erstgespräche führen","Abschließen und liefern"],
+    womit:["Claude","Calendly","Stripe","CRM"], zug:"Tag 0 im Agentur-Protokoll heute komplett durchgehen.", kurse:"09 · Agentur-Protokoll: Phase 1 · 03 · Tricks & Frameworks · 01 · Prompt-Bibliothek", satz:"meine eigene KI-Agentur aufzubauen" },
+  { id:"produkt", ic:"💡", name:"Eigene digitale Produkte", kurz:"Vorlagen, Guides, kleine Tools — einmal bauen, oft verkaufen.", tags:["wenig-zeit","online","ohne-kamera"],
+    was:"Du nimmst ein Problem, das du gut kennst, und lässt deinen Klon daraus ein Produkt bauen: eine Vorlage, einen Guide, ein kleines Tool. Die Arbeit liegt am Anfang, der Verkauf braucht Reichweite.",
+    klon:["Problem und Zielgruppe recherchieren","Produkt entwerfen und bauen","Verkaufsseite und Texte","Content zur Vermarktung"],
+    du:["Thema wählen, das du verstehst","Qualität prüfen","Reichweite aufbauen"],
+    womit:["Claude","Stitch","Zahlungsanbieter","Social Media"], zug:"Drei Probleme aufschreiben, bei denen dich Leute schon mal um Rat gefragt haben.", kurse:"01 · Prompt-Bibliothek · 03 · Tricks & Frameworks · 02 · Skills & Tools", satz:"eigene digitale Produkte mit KI zu bauen und zu verkaufen" },
+  { id:"jarvis", ic:"🧠", name:"Dein eigener Jarvis", kurz:"Ein Klon, der zuerst DEINE Arbeit übernimmt.", tags:["wenig-zeit","wenig-geld","ohne-kamera"],
+    was:"Bevor du Arbeit verkaufst, kannst du sie dir selbst abnehmen: Planung, Recherche, Mails, Wissen. Mit Jarvis und Ultron baust du dir dein eigenes System — und genau das wird später dein Vorführstück.",
+    klon:["Tagesplan und Morning Report","Mails sortieren","Dein Wissen beantworten","Zahlen der Woche"],
+    du:["Brain-Ordner anlegen","Skills auswählen","Täglich benutzen"],
+    womit:["Claude","Jarvis Build-Guide","Ultron","Handy-Setup"], zug:"Den Brain-Ordner anlegen und drei Dinge hineinlegen, die du jede Woche nachschlägst.", kurse:"04 · Jarvis Build-Guide · 05 · Ultron Build-Guide · 02 · Skills & Tools", satz:"meinen eigenen Jarvis zu bauen, der meine Arbeit übernimmt" }
+];
+const $ = id => document.getElementById(id);
+const store = { get(k){ try { return JSON.parse(localStorage.getItem("cls-start-"+k)); } catch(_) { return null; } }, set(k,v){ try { localStorage.setItem("cls-start-"+k, JSON.stringify(v)); } catch(_){} } };
+
+// 1 · Ziel
+const felder = ["Was","Womit","Bis","Std","Mess","Warum"];
+const gespeichert = store.get("ziel") || {};
+felder.forEach(f => { const el = $("z"+f); if (gespeichert[f]) el.value = gespeichert[f]; el.addEventListener("input", karte); });
+function karte() {
+  const v = {}; felder.forEach(f => v[f] = $("z"+f).value.trim()); store.set("ziel", v);
+  $("kWas").innerHTML = v.Was ? "Ich will <span>" + esc(v.Was) + "</span>" : "Ich will <span>…</span>";
+  $("kWomit").textContent = v.Womit || "—";
+  $("kBis").textContent = v.Bis ? new Date(v.Bis).toLocaleDateString("de-DE",{day:"2-digit",month:"long",year:"numeric"}) : "—";
+  $("kStd").textContent = v.Std ? v.Std + " Std. pro Woche" : "—";
+  $("kMess").textContent = v.Mess || "—";
+  $("kWarum").textContent = v.Warum || "—";
+  const ok = { was:v.Was.length>8, womit:v.Womit.length>3, bis:!!v.Bis, std:+v.Std>0, mess:/\d/.test(v.Mess), warum:v.Warum.length>10 };
+  document.querySelectorAll("#smart span").forEach(s => s.classList.toggle("ok", ok[s.dataset.k]));
+}
+const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+karte();
+
+// 2 · Landkarte
+WEGE.forEach(w => {
+  const b = document.createElement("button"); b.className = "kachel"; b.dataset.id = w.id; b.dataset.tags = w.tags.join(" ");
+  b.innerHTML = `<div class="ic">${w.ic}</div><b>${w.name}</b><small>${w.kurz}</small><div class="tags">${w.tags.map(t=>`<span>${t.replace("-"," ")}</span>`).join("")}</div>`;
+  b.onclick = () => zeige(w.id); $("grid").appendChild(b);
+});
+function zeige(id) {
+  const w = WEGE.find(x => x.id === id);
+  document.querySelectorAll(".kachel").forEach(k => k.classList.toggle("on", k.dataset.id === id));
+  const satz = "Esis, ich bin bereit, " + w.satz;
+  const d = $("detail");
+  d.innerHTML = `<h3>${w.ic} ${w.name}</h3><p class="was">${w.was}</p>
+    <div class="dgrid">
+      <div class="box"><div class="eb">Das macht dein Klon</div><ul>${w.klon.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+      <div class="box"><div class="eb">Das machst du</div><ul>${w.du.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+      <div class="box"><div class="eb">Womit</div><ul>${w.womit.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+    </div>
+    <div class="zug"><b>Dein erster Schritt</b>${w.zug}</div>
+    <div class="zug"><b>In Skool</b>${w.kurse}</div>
+    <div class="esatz"><code id="satz">${satz}</code><button class="btn" id="kop">Satz für Esis kopieren</button></div>`;
+  d.classList.add("show");
+  $("kop").onclick = async e => { try { await navigator.clipboard.writeText(satz); } catch(_){} e.target.textContent = "Kopiert ✓"; e.target.classList.add("ok"); };
+  if (!$("zWomit").value) { $("zWomit").value = w.name; karte(); }
+  d.scrollIntoView({ behavior:"smooth", block:"nearest" });
+}
+$("filter").onclick = e => {
+  const f = e.target.dataset.f; if (!f) return;
+  document.querySelectorAll("#filter button").forEach(b => b.classList.toggle("on", b === e.target));
+  document.querySelectorAll(".kachel").forEach(k => k.classList.toggle("aus", f !== "alle" && !k.dataset.tags.includes(f)));
+};
+
+// 3 · Wahl
+const FRAGEN = [
+  { q:"Wie viel Budget kannst du die ersten zwei Monate einsetzen?", a:[["Fast nichts",{maps:2,content:2,jarvis:2,produkt:1}],["Ein paar Hundert Euro",{maps:1,auto:1,airbnb:1,agentur:1}],["Mehr als das",{shop:2,agentur:2,auto:1}]] },
+  { q:"Wie viele Stunden pro Woche hast du wirklich?", a:[["Unter 5",{jarvis:2,produkt:2}],["5 bis 15",{maps:2,content:1,airbnb:1,auto:1}],["Über 15",{agentur:2,shop:1,maps:1}]] },
+  { q:"Sprichst du gern mit Menschen vor Ort?", a:[["Ja, gern",{maps:2,auto:2,agentur:1}],["Lieber online",{shop:2,produkt:2,content:1,airbnb:1}]] },
+  { q:"Was reizt dich mehr?", a:[["Etwas bauen",{maps:1,jarvis:2,produkt:1,auto:1}],["Etwas verkaufen",{agentur:2,shop:1,maps:1}],["Etwas erzählen",{content:2,produkt:1}]] }
+];
+const antworten = store.get("quiz") || {};
+FRAGEN.forEach((f,i) => {
+  const el = document.createElement("div"); el.className = "frage";
+  el.innerHTML = `<div class="q">${f.q}</div><div class="opts">${f.a.map((a,j)=>`<button data-i="${i}" data-j="${j}">${a[0]}</button>`).join("")}</div>`;
+  $("quiz").appendChild(el);
+});
+$("quiz").onclick = e => { const b = e.target; if (b.dataset.i === undefined) return; antworten[b.dataset.i] = +b.dataset.j; store.set("quiz", antworten); wahl(); };
+function wahl() {
+  document.querySelectorAll(".frage .opts button").forEach(b => b.classList.toggle("on", antworten[b.dataset.i] === +b.dataset.j));
+  if (Object.keys(antworten).length < FRAGEN.length) return;
+  const p = {}; FRAGEN.forEach((f,i) => Object.entries(f.a[antworten[i]][1]).forEach(([k,v]) => p[k] = (p[k]||0) + v));
+  const top = Object.entries(p).sort((a,b)=>b[1]-a[1]).slice(0,2).map(([k])=>WEGE.find(w=>w.id===k));
+  $("empf").innerHTML = `Zu deiner Lage passen am besten: <b>${top[0].ic} ${top[0].name}</b> und <b>${top[1].ic} ${top[1].name}</b>. Schau dir beide oben an — und entscheide dich für <b>einen</b>. <br><br><button class="btn" onclick="zeige('${top[0].id}')">${top[0].name} öffnen</button>`;
+}
+wahl();
+</script>
+</body>
+</html>

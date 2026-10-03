@@ -60,6 +60,8 @@ Empfohlene iframe-Höhen: 01 → 1100 · 02 → 1400 · 03 → 1500 · 04 → 12
 | 14 | 14-stitch-befehle.html | 10 · Setups & Tricks → Tricks | Stitch-Spickzettel mit Vorher/Nachher |
 | 15 | 15-pflege-rechner.html | 10 · Setups & Tricks → Bildlich erklärt | Doppel-Schalter: einmalig + monatlich als Diagramm |
 | 16 | 16-landkarte.html | 10 · Setups & Tricks → Bildlich erklärt | Die 9 Schalter als Landkarte mit Fortschritt |
+| 17 | 17-esis-bereit.html | 00 · Überblick → „Esis, ich bin bereit“ (alle) + Dein Start | Codewort erklärt, Satz-Baukasten, WhatsApp-Vorschau, drei Wege |
+| 18 | 18-dein-start.html | Dein Start (Premium, privat) | Zielkarte, Landkarte der 8 Wege mit Detail + Esis-Satz, 4-Fragen-Wahl, Start-Regeln |
 
 `index.html` = Übersicht aller Widgets (z. B. als „Ressourcen"-Lektion ganz oben im Classroom verlinken).
 

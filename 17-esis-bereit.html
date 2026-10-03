@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CLS · Esis, ich bin bereit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  :root { --bg:#080706; --panel:#0e0d0b; --ink:#f2efe8; --muted:rgba(242,239,232,.62); --faint:rgba(242,239,232,.34); --line:rgba(242,239,232,.14); --am:#ff9f1c; --clay:#D97757; --wa:#0b141a; --wa-out:#005c4b; }
+  body { background:var(--bg); color:var(--ink); font-family:'Archivo',sans-serif; line-height:1.6; padding:36px 16px 70px; }
+  .wrap { max-width:1060px; margin:0 auto; }
+  .kicker { font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.3em; color:var(--am); text-transform:uppercase; margin-bottom:14px; }
+  h1 { font-family:'Anton',sans-serif; font-weight:400; text-transform:uppercase; font-size:clamp(34px,7vw,64px); line-height:1; margin-bottom:16px; }
+  h1 .am, h2 .am { color:var(--am); }
+  h2 { font-family:'Anton',sans-serif; font-weight:400; text-transform:uppercase; font-size:clamp(22px,3.4vw,28px); margin:54px 0 16px; }
+  .lead { color:var(--muted); font-size:18px; max-width:700px; }
+  .lead b { color:var(--ink); }
+  .code { margin:34px 0 8px; border:1px solid var(--am); background:linear-gradient(135deg,rgba(255,159,28,.16),rgba(217,119,87,.05) 60%,transparent); padding:28px 24px; display:flex; flex-direction:column; gap:12px; }
+  .code .eb { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.24em; text-transform:uppercase; color:var(--faint); }
+  .code .satz { font-family:'Anton',sans-serif; text-transform:uppercase; font-size:clamp(30px,6vw,54px); line-height:1.02; }
+  .code .satz span { color:var(--am); }
+  .code .unter { color:var(--muted); font-size:15px; }
+
+  .steps { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
+  @media (max-width:860px){ .steps { grid-template-columns:1fr 1fr; } }
+  @media (max-width:520px){ .steps { grid-template-columns:1fr; } }
+  .step { border:1px solid var(--line); background:var(--panel); padding:18px 16px; }
+  .step .n { font-family:'Anton',sans-serif; font-size:34px; color:var(--am); line-height:1; margin-bottom:10px; }
+  .step b { display:block; font-size:16px; margin-bottom:4px; }
+  .step p { color:var(--muted); font-size:14.5px; }
+
+  .cols { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,400px); gap:22px; align-items:start; }
+  @media (max-width:880px){ .cols { grid-template-columns:1fr; } }
+  .panel { border:1px solid var(--line); background:var(--panel); padding:20px; }
+  .lbl { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); margin:4px 0 10px; }
+  .chips { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+  .chip { font-family:'Archivo',sans-serif; font-size:14px; padding:8px 12px; border:1px solid var(--line); background:transparent; color:var(--ink); cursor:pointer; }
+  .chip:hover, .chip.on { border-color:var(--am); color:var(--am); }
+  textarea { width:100%; background:#050505; border:1px solid var(--line); color:var(--ink); font-family:'Archivo',sans-serif; font-size:16px; padding:12px; min-height:84px; resize:vertical; outline:none; }
+  textarea:focus { border-color:var(--am); }
+  .hint { font-size:13px; color:var(--faint); margin-top:8px; }
+  .btn { margin-top:14px; font-family:'JetBrains Mono',monospace; font-size:13px; letter-spacing:.12em; text-transform:uppercase; padding:13px 18px; cursor:pointer; border:1px solid var(--am); background:var(--am); color:#080706; font-weight:700; width:100%; }
+  .btn.ok { background:transparent; color:var(--am); }
+
+  .phone { background:var(--wa); border:1px solid var(--line); border-radius:22px; padding:16px 12px 18px; display:flex; flex-direction:column; gap:10px; min-height:420px; }
+  .phone .top { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--faint); text-align:center; letter-spacing:.1em; padding-bottom:8px; border-bottom:1px solid rgba(255,255,255,.06); }
+  .bub { max-width:88%; padding:8px 11px; border-radius:10px; font-size:14px; line-height:1.45; white-space:pre-line; }
+  .bub.out { align-self:flex-end; background:var(--wa-out); }
+  .bub.in { align-self:flex-start; background:#202c33; }
+  .bub .wer { display:block; font-size:11.5px; color:var(--am); font-weight:600; margin-bottom:2px; }
+  .bub.vid { padding:6px; }
+  .bub.vid .thumb { height:92px; border-radius:8px; background:linear-gradient(135deg,#1a1410,#2a1c10); display:flex; align-items:center; justify-content:center; font-family:'Anton',sans-serif; text-transform:uppercase; font-size:15px; color:var(--am); letter-spacing:.03em; text-align:center; padding:0 10px; }
+  .bub.vid small { display:block; padding:6px 4px 0; color:var(--muted); font-size:12.5px; }
+  .fade { opacity:0; transform:translateY(6px); transition:opacity .4s, transform .4s; }
+  .fade.show { opacity:1; transform:none; }
+
+  .wege { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+  @media (max-width:820px){ .wege { grid-template-columns:1fr; } }
+  .weg { border:1px solid var(--line); background:var(--panel); padding:20px 18px; }
+  .weg.mid { border-color:rgba(255,159,28,.5); }
+  .weg .eb { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--faint); }
+  .weg h3 { font-family:'Anton',sans-serif; font-weight:400; text-transform:uppercase; font-size:22px; margin:6px 0 10px; line-height:1.05; }
+  .weg .preis { font-family:'JetBrains Mono',monospace; color:var(--am); font-size:13px; margin-bottom:10px; }
+  .weg p { color:var(--muted); font-size:14.5px; }
+
+  .regeln { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  @media (max-width:700px){ .regeln { grid-template-columns:1fr; } }
+  .regel { border-left:2px solid var(--am); padding:4px 0 4px 14px; }
+  .regel b { display:block; }
+  .regel span { color:var(--muted); font-size:14.5px; }
+  .foot { margin-top:48px; color:var(--faint); font-size:13px; border-top:1px solid var(--line); padding-top:16px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">CLS · Dein Fahrplan auf Zuruf</div>
+  <h1>Du bist <span class="am">angekommen.</span><br>Jetzt sag es Esis.</h1>
+  <p class="lead">Du kennst jetzt den Aufbau, die Schalter und die Werkzeuge. Wenn du weißt, <b>wofür</b> du loslegen willst, schreibst du einen einzigen Satz in deine WhatsApp-Gruppe — und Esis baut dir eine persönliche Video-Lektion für genau dein Ziel.</p>
+
+  <div class="code">
+    <div class="eb">Das einzige Codewort</div>
+    <div class="satz">„Esis, ich bin bereit <span>…</span>“</div>
+    <div class="unter">… und dahinter, wofür. Zum Beispiel: <i>„Esis, ich bin bereit, Websites für Unternehmen zu erstellen.“</i></div>
+  </div>
+
+  <h2>So <span class="am">läuft</span> es ab</h2>
+  <div class="steps">
+    <div class="step"><div class="n">01</div><b>Du schreibst</b><p>Den Satz in deine CLS-Gruppe — mit deinem Ziel dahinter. Je genauer, desto besser.</p></div>
+    <div class="step"><div class="n">02</div><b>Esis bestätigt</b><p>Sofort eine kurze Antwort: Ziel erkannt, dein Fahrplan wird gebaut.</p></div>
+    <div class="step"><div class="n">03</div><b>Dein Rundown</b><p>Nach wenigen Minuten: welche Kurse und Lektionen du dir in welcher Reihenfolge anschaust — mit Links.</p></div>
+    <div class="step"><div class="n">04</div><b>Drei Videos</b><p>Nach und nach kommen drei Erklärvideos, eins pro Weg. Rechne mit ein bis zwei Stunden.</p></div>
+  </div>
+
+  <h2>Bau dir deinen <span class="am">Satz</span></h2>
+  <div class="cols">
+    <div class="panel">
+      <div class="lbl">Wofür bist du bereit? Tippen oder antippen</div>
+      <div class="chips" id="chips"></div>
+      <textarea id="ziel" placeholder="z. B. Websites für Handwerker in meiner Stadt zu bauen"></textarea>
+      <div class="hint">Tipp: Nenn das <b>Was</b> und gern auch das <b>Für wen</b> („für Friseure“, „für Ferienwohnungen in Bayern“). Esis richtet alles daran aus.</div>
+      <button class="btn" id="copy">Satz kopieren</button>
+      <div class="hint">Dann WhatsApp öffnen → deine Gruppe „CLS – Dein Name“ → einfügen → senden.</div>
+    </div>
+    <div class="phone" id="phone">
+      <div class="top">CLS – Du – Gold</div>
+      <div class="bub out" id="bOut">Esis, ich bin bereit …</div>
+      <div class="bub in fade" id="b1"><span class="wer">Esis</span>Stark! 🔥 Ich habe es. Ich baue dir jetzt deinen persönlichen Fahrplan …</div>
+      <div class="bub in fade" id="b2"><span class="wer">Esis</span>🧭 Dein Fahrplan
+Das schaust du dir an — in dieser Reihenfolge:
+1. 10 · Setups &amp; Tricks
+2. 01 · Prompt-Bibliothek
+3. …</div>
+      <div class="bub in vid fade" id="b3"><div class="thumb">Weg 1 · Günstig &amp; einfach</div><small>🎬 Video 1/3</small></div>
+      <div class="bub in vid fade" id="b4"><div class="thumb">Weg 2 · Schneller, kostet etwas</div><small>🎬 Video 2/3</small></div>
+      <div class="bub in vid fade" id="b5"><div class="thumb">Weg 3 · Premium-Qualität</div><small>🎬 Video 3/3</small></div>
+    </div>
+  </div>
+
+  <h2>Deine drei <span class="am">Wege</span></h2>
+  <div class="wege">
+    <div class="weg"><div class="eb">Weg 1</div><h3>Einfach &amp; günstig</h3><div class="preis">kaum Kosten · mehr eigene Zeit</div><p>Mit kostenlosen oder sehr günstigen Werkzeugen. Du machst mehr selbst und lernst jeden Handgriff.</p></div>
+    <div class="weg mid"><div class="eb">Weg 2</div><h3>Schneller, kostet etwas</h3><div class="preis">bezahlte Werkzeuge · spart Zeit</div><p>Vorlagen, Bezahl-Abos und Automationen, die dir Arbeit abnehmen — du kommst schneller zum ersten Ergebnis.</p></div>
+    <div class="weg"><div class="eb">Weg 3</div><h3>Teuer, höchste Qualität</h3><div class="preis">beste Werkzeuge · Profi-Ergebnis</div><p>Die stärksten Werkzeuge, wo nötig Profis dazu. Für dich, wenn Qualität vor Budget geht.</p></div>
+  </div>
+
+  <h2>Gut zu <span class="am">wissen</span></h2>
+  <div class="regeln">
+    <div class="regel"><b>Nur dieser eine Satz.</b><span>In deiner Gruppe antwortet Esis auf nichts anderes. Fragen gehen wie immer an Mario und das Team.</span></div>
+    <div class="regel"><b>Ein Ziel pro Satz.</b><span>Zwei Richtungen vergleichen? Wenn der erste Fahrplan fertig ist, schick den Satz mit dem zweiten Ziel — bis zu zweimal am Tag.</span></div>
+    <div class="regel"><b>Richtwerte, keine Versprechen.</b><span>Kosten und Zeiten in den Videos sind ehrliche Orientierung. Was rauskommt, entscheidet deine Umsetzung.</span></div>
+    <div class="regel"><b>Du baust, bevor du fragst.</b><span>Jedes Video endet mit „Dein Zug“ — eine Sache, die du noch heute machst.</span></div>
+  </div>
+
+  <div class="foot">CLS · Clone Looping System — Esis ist das KI-System hinter deinem Fahrplan.</div>
+</div>
+<script>
+  const beispiele = ["Websites für Unternehmen zu erstellen","Airbnbs mit KI zu verwalten","einen Onlineshop mit Dropshipping aufzubauen","Content für lokale Betriebe zu machen","Abläufe in Firmen zu automatisieren","eigene digitale Produkte zu verkaufen","meinen eigenen Jarvis zu bauen"];
+  const chips = document.getElementById("chips"), ziel = document.getElementById("ziel"), out = document.getElementById("bOut");
+  beispiele.forEach(b => { const c = document.createElement("button"); c.className = "chip"; c.textContent = b; c.onclick = () => { document.querySelectorAll(".chip").forEach(x => x.classList.remove("on")); c.classList.add("on"); ziel.value = b; zeigen(); }; chips.appendChild(c); });
+  const satz = () => { const z = ziel.value.trim().replace(/^[,.\s]+/, ""); return z ? `Esis, ich bin bereit, ${z}` : "Esis, ich bin bereit …"; };
+  let t = [];
+  function zeigen() {
+    out.textContent = satz();
+    t.forEach(clearTimeout); t = [];
+    ["b1","b2","b3","b4","b5"].forEach((id, i) => { const el = document.getElementById(id); el.classList.remove("show"); if (ziel.value.trim()) t.push(setTimeout(() => el.classList.add("show"), 500 + i * 650)); });
+  }
+  ziel.addEventListener("input", zeigen);
+  document.getElementById("copy").onclick = async (e) => {
+    const b = e.currentTarget;
+    try { await navigator.clipboard.writeText(satz()); } catch (_) { ziel.select(); document.execCommand && document.execCommand("copy"); }
+    b.textContent = "Kopiert ✓ — jetzt in deine Gruppe"; b.classList.add("ok");
+    setTimeout(() => { b.textContent = "Satz kopieren"; b.classList.remove("ok"); }, 2600);
+  };
+</script>
+</body>
+</html>
